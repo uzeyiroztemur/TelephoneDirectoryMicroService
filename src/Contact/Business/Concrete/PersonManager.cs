@@ -2,6 +2,7 @@
 using Business.Abstract;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation.Concrete;
+using Core.Aspects.Autofac.Transaction;
 using Core.Aspects.Autofac.Validation;
 using Core.Entities.DTOs;
 using Core.Utilities.Business;
@@ -81,6 +82,7 @@ namespace Business.Concrete
             return new SuccessResult();
         }
 
+        [TransactionScopeAspect()]
         public IResult Delete(Guid id)
         {
             var entity = _personDal.Get(f => f.Id == id);
