@@ -23,6 +23,7 @@ asset/Assessment.pdf
 	<li>Logging</li>
 	<li>xUnit</li>
 	<li>Moq</li>
+	<li>Coverlet</li>
 	<li>Docker</li>
 </ul>
 
