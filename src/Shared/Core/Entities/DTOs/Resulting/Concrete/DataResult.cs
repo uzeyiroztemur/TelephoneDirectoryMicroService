@@ -4,6 +4,11 @@ namespace Core.Entities.DTOs
 {
     public class DataResult<T> : Result, IDataResult<T>, IResult
     {
+        public DataResult()
+        {
+            
+        }
+
         public DataResult(T data, int count, bool success, string message)
           : base(success, message)
         {
