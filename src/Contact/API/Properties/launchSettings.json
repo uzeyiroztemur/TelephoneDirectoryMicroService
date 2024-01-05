@@ -16,7 +16,7 @@
                 "ASPNETCORE_ENVIRONMENT": "Development"
             }
         },
-        "TelephoneDirectory.Auth": {
+        "TelephoneDirectory.Contact": {
             "commandName": "Project",
             "launchBrowser": true,
             "launchUrl": "swagger",
