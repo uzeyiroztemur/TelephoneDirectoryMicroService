@@ -1,15 +1,15 @@
-## Proje Hakkýnda
+## Proje Hakkï¿½nda
 
-Birbirleri ile haberleþen minimum iki microservice'in olduðu bir yapý tasarlayarak, basit
-bir telefon rehberi uygulamasý oluþturulmasý saðlanacaktýr.
+Birbirleri ile haberleï¿½en minimum iki microservice'in olduï¿½u bir yapï¿½ tasarlayarak, basit
+bir telefon rehberi uygulamasï¿½ oluï¿½turulmasï¿½ saï¿½lanacaktï¿½r.
 
-Detaylý bilgilere aþaðýdaki adres yolundan belirtilen pdf dosyasýndan ulaþabilirsiniz.
+Detaylï¿½ bilgilere aï¿½aï¿½ï¿½daki adres yolundan belirtilen pdf dosyasï¿½ndan ulaï¿½abilirsiniz.
 
 ```
 asset/Assessment.pdf
 ```
 
-<h3><b>Telefon Rehberi Projesinde Kullanýlan Teknolojiler</b></h2>
+<h3><b>Telefon Rehberi Projesinde Kullanï¿½lan Teknolojiler</b></h2>
 <ul>
 	<li>.NET Core 6</li>
 	<li>Entity Framework Core 6</li>
@@ -30,9 +30,9 @@ asset/Assessment.pdf
 <h3><b>Telefon Rehberi Projesi Gereklilikler</b></h2>
 <br>
 
-Bilgisayarýnýzda RabbitMQ Postgres kurulu olmalýdýr. Eðer deðilse Docker kurulumu yapýlarak aþaðýdaki yol izlenebilir.
+Bilgisayarï¿½nï¿½zda RabbitMQ Postgres kurulu olmalï¿½dï¿½r. Eï¿½er deï¿½ilse Docker kurulumu yapï¿½larak aï¿½aï¿½ï¿½daki yol izlenebilir.
 
-1.) Aþaðýdaki adres üzerinden docker indirilip kurulmalýdýr.
+1.) Aï¿½aï¿½ï¿½daki adres ï¿½zerinden docker indirilip kurulmalï¿½dï¿½r.
 
 ```
 https://www.docker.com/products/docker-desktop/
@@ -40,7 +40,7 @@ https://www.docker.com/products/docker-desktop/
 
 <br>
 
-2.) Docker üzerinde Postgres kurulumu için aþaðýdaki komutu kullanabilirsiniz.
+2.) Docker ï¿½zerinde Postgres kurulumu iï¿½in aï¿½aï¿½ï¿½daki komutu kullanabilirsiniz.
 
 ```
 docker run --name postgresql -e POSTGRES_PASSWORD=rI1l9j!p7gO@ -p 5432:5432 -d postgres
@@ -48,17 +48,17 @@ docker run --name postgresql -e POSTGRES_PASSWORD=rI1l9j!p7gO@ -p 5432:5432 -d p
 
 <br>
 
-3.) Docker üzerinde RabbitMQ kurulumu için aþaðýdaki komutu kullanabilirsiniz.
+3.) Docker ï¿½zerinde RabbitMQ kurulumu iï¿½in aï¿½aï¿½ï¿½daki komutu kullanabilirsiniz.
 
 ```
 docker run --name rabbitmq -d -p 15672:15672 -p 5672:5672 rabbitmq:3-management
 ```
 
-<h3><b>Telefon Rehberi Projesinin Çalýþtýrýlmasý</b></h2>
+<h3><b>Telefon Rehberi Projesinin ï¿½alï¿½ï¿½tï¿½rï¿½lmasï¿½</b></h2>
 
 <br>
 
-1.) Öncelikle aþaðýdaki dizinlerde bulunan <b>appsettings.json</b> config ve path ayarlamalarýný kendinize göre ayarlayýnýz.
+1.) ï¿½ncelikle aï¿½aï¿½ï¿½daki dizinlerde bulunan <b>appsettings.json</b> config ve path ayarlamalarï¿½nï¿½ kendinize gï¿½re ayarlayï¿½nï¿½z.
 
 ```
 src/Auth/API/appsettings.json
@@ -80,7 +80,7 @@ src/Gateway/API/appsettings.json
 
 <br>
 
-2.) Aþaðýda belirtilen pathler için migrationlarýnýn çalýþtýrýlmasý saðlanacaktýr. 
+2.) Aï¿½aï¿½ï¿½da belirtilen pathler iï¿½in migrationlarï¿½nï¿½n ï¿½alï¿½ï¿½tï¿½rï¿½lmasï¿½ saï¿½lanacaktï¿½r. 
 
 ```
 src/Auth/DataAccess
@@ -94,7 +94,7 @@ update-database
 
 <br>
 
-3.) Bu iþlemler yapýldýktan sonra aþaðýdaki servisler çalýþtýrýlarak tüm süreçler gateway api servisi üzerinden yapýlabilir.
+3.) Bu iï¿½lemler yapï¿½ldï¿½ktan sonra aï¿½aï¿½ï¿½daki servisler ï¿½alï¿½ï¿½tï¿½rï¿½larak tï¿½m sï¿½reï¿½ler gateway api servisi ï¿½zerinden yapï¿½labilir.
 
 <br><br>
 
@@ -117,10 +117,17 @@ Token Alma
 ```
 
 
-4.) Postman testi içinde postman collection dosyalarý eklenmiþtir.
+4.) Postman testi iï¿½inde postman collection dosyalarï¿½ eklenmiï¿½tir.
 
 
 ```
 test/TelephoneDirectory.postman_collection.json
 test/TelephoneDirectory.postman_environment.json
+```
+
+
+5.) Projenin Ã§alÄ±ÅŸma mimarisi iÃ§in aÅŸaÄŸÄ±daki gÃ¶rsele bakabilirsiniz.
+
+```
+asset/diyagram.jpg
 ```
