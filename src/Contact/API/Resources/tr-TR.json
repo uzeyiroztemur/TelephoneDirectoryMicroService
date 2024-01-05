@@ -1,0 +1,13 @@
+{
+    "UnauthorizedRequest": "Oturum açmanız gerekmektedir.",
+    "RecordNotFound": "Kayıt bulunamadı.",
+    "FirstNameRequired": "İsim boş olamaz.",
+    "FirstNameLength": "İsim {MinLength} ile {MaxLength} karakter arası olmalıdır.",
+    "LastNameRequired": "Soyisim boş olamaz.",
+    "LastNameLength": "Soyisim {MinLength} ile {MaxLength} karakter arası olmalıdır.",
+    "CompanyLength": "Şirket {MinLength} ile {MaxLength} karakter arası olmalıdır.",
+    "InfoValueRequired": "İletişim bilgisi boş olamaz.",
+    "InfoValueLength": "İletişim bilgisi {MinLength} ile {MaxLength} karakter arası olmalıdır.",
+    "PersonContactInfoHasBeenUsed": "Girilen iletişim bilgileri daha önce tanımlanmış.",
+    "PersonHasBeenUsed": "Girilen kişi bilgileri daha önce tanımlanmış."
+}
