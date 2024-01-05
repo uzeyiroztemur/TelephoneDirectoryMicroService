@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
 using Business.Abstract;
 using Business.Constants;
-using Business.MessageContracts.Commands;
 using Business.MessageContracts;
+using Business.MessageContracts.Commands;
 using Core.Aspects.Autofac.Transaction;
+using Core.CrossCuttingConcerns.Caching;
 using Core.Entities.DTOs;
 using Core.Utilities.Business;
 using Core.Utilities.Filtering;
@@ -22,13 +23,15 @@ namespace Business.Concrete
         private readonly IReportDal _reportDal;
         private readonly IReportDetailDal _reportDetailDal;
         private readonly ISendEndpointProvider _sendEndpointProvider;
+        private readonly ICacheManager _cacheManager;
         private readonly IMapper _mapper;
 
-        public ReportManager(IReportDal reportDal, IReportDetailDal reportDetailDal, ISendEndpointProvider sendEndpointProvider, IMapper mapper)
+        public ReportManager(IReportDal reportDal, IReportDetailDal reportDetailDal, ISendEndpointProvider sendEndpointProvider, ICacheManager cacheManager, IMapper mapper)
         {
             _reportDal = reportDal;
             _reportDetailDal = reportDetailDal;
             _sendEndpointProvider = sendEndpointProvider;
+            _cacheManager = cacheManager;
             _mapper = mapper;
         }
 
@@ -46,9 +49,20 @@ namespace Business.Concrete
 
         public IDataResult<ReportForPreviewDTO> Get(Guid id)
         {
-            var dataItem = _reportDal.Get(id);
-            if (dataItem != null)
+            if (_cacheManager.IsAdded("report-" + id.ToString()))
+            {
+                var dataItem = _cacheManager.Get<ReportForPreviewDTO>("report-" + id.ToString());
                 return new SuccessDataResult<ReportForPreviewDTO>(dataItem);
+            }
+            else
+            {
+                var dataItem = _reportDal.Get(id);
+                if (dataItem != null)
+                {
+                    _cacheManager.Add("report-" + id.ToString(), dataItem, int.MaxValue);
+                    return new SuccessDataResult<ReportForPreviewDTO>(dataItem);
+                }
+            }
 
             return new ErrorDataResult<ReportForPreviewDTO>();
         }
