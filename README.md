@@ -98,7 +98,17 @@ update-database
 
 <br><br>
 
+```
+src/Auth/API
+src/Contact/API
+src/Report/API
+src/Gateway/API
+```
+
+<br>
+
 Token Alma 
+
 ```
 {
   "userName": "uzeyiroztemur@gmail.com",
@@ -107,3 +117,10 @@ Token Alma
 ```
 
 
+4.) Postman testi içinde postman collection dosyalarý eklenmiþtir.
+
+
+```
+test/TelephoneDirectory.postman_collection.json
+test/TelephoneDirectory.postman_environment.json
+```

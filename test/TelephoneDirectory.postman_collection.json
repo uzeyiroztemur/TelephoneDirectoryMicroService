@@ -1,0 +1,307 @@
+{
+	"info": {
+		"_postman_id": "0b7a9dd7-2f4e-42a5-962c-ae21235e401e",
+		"name": "TelephoneDirectory",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5886585"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Token Alma",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody)\r",
+									"pm.environment.set(\"AccessToken\", jsonData.data.token.token)\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userName\": \"uzeyiroztemur@gmail.com\",\r\n    \"password\": \"123456aA!\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{GatewayUrl}}/auth/login",
+							"host": [
+								"{{GatewayUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Contact",
+			"item": [
+				{
+					"name": "Person-List",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{AccessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{GatewayUrl}}/contact/persons",
+							"host": [
+								"{{GatewayUrl}}"
+							],
+							"path": [
+								"contact",
+								"persons"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Person-Get",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{AccessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{GatewayUrl}}/contact/persons/view/9771504b-22b1-4ee1-a121-20cde9896079",
+							"host": [
+								"{{GatewayUrl}}"
+							],
+							"path": [
+								"contact",
+								"persons",
+								"view",
+								"9771504b-22b1-4ee1-a121-20cde9896079"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Person-Add",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{AccessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Üzeyir\",\r\n    \"lastName\": \"Öztemür\",\r\n    \"company\": \"TEST-2\",\r\n    \"isActive\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{GatewayUrl}}/contact/persons",
+							"host": [
+								"{{GatewayUrl}}"
+							],
+							"path": [
+								"contact",
+								"persons"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PersonInfo-Add",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{AccessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"infoType\": 1,\r\n    \"infoValue\": \"string\",\r\n    \"isActive\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{GatewayUrl}}/contact/personcontactinfos/9771504b-22b1-4ee1-a121-20cde9896079",
+							"host": [
+								"{{GatewayUrl}}"
+							],
+							"path": [
+								"contact",
+								"personcontactinfos",
+								"9771504b-22b1-4ee1-a121-20cde9896079"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Person-Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{AccessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{GatewayUrl}}/contact/persons/e7b94add-38a1-4241-9625-480be50b85c1",
+							"host": [
+								"{{GatewayUrl}}"
+							],
+							"path": [
+								"contact",
+								"persons",
+								"e7b94add-38a1-4241-9625-480be50b85c1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PersonInfo-Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{AccessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{GatewayUrl}}/contact/personcontactinfos/9771504b-22b1-4ee1-a121-20cde9896079/b0aa7649-243b-49ba-a680-a3d37d94f742",
+							"host": [
+								"{{GatewayUrl}}"
+							],
+							"path": [
+								"contact",
+								"personcontactinfos",
+								"9771504b-22b1-4ee1-a121-20cde9896079",
+								"b0aa7649-243b-49ba-a680-a3d37d94f742"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Report",
+			"item": [
+				{
+					"name": "Report-List",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{AccessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{GatewayUrl}}/report/reports",
+							"host": [
+								"{{GatewayUrl}}"
+							],
+							"path": [
+								"report",
+								"reports"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Report-Generate",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{AccessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{GatewayUrl}}/report/reports",
+							"host": [
+								"{{GatewayUrl}}"
+							],
+							"path": [
+								"report",
+								"reports"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Report-Get",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{AccessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{GatewayUrl}}/report/reports/view/f01dbd43-9d99-4282-a054-10f29fcab0af",
+							"host": [
+								"{{GatewayUrl}}"
+							],
+							"path": [
+								"report",
+								"reports",
+								"view",
+								"f01dbd43-9d99-4282-a054-10f29fcab0af"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
