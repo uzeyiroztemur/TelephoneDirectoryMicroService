@@ -1,15 +1,15 @@
-## Proje Hakk�nda
+## Proje Hakkında
 
-Birbirleri ile haberle�en minimum iki microservice'in oldu�u bir yap� tasarlayarak, basit
-bir telefon rehberi uygulamas� olu�turulmas� sa�lanacakt�r.
+Birbirleri ile haberleşen minimum iki microservice'in olduğu bir yapı tasarlayarak, basit
+bir telefon rehberi uygulaması oluşturulması sağlanacaktır.
 
-Detayl� bilgilere a�a��daki adres yolundan belirtilen pdf dosyas�ndan ula�abilirsiniz.
+Detaylı bilgilere aşağıdaki adres yolundan belirtilen pdf dosyasından ulaşabilirsiniz.
 
 ```
 asset/Assessment.pdf
 ```
 
-<h3><b>Telefon Rehberi Projesinde Kullan�lan Teknolojiler</b></h2>
+<h3><b>Telefon Rehberi Projesinde Kullanılan Teknolojiler</b></h2>
 <ul>
 	<li>.NET Core 6</li>
 	<li>Entity Framework Core 6</li>
@@ -30,9 +30,9 @@ asset/Assessment.pdf
 <h3><b>Telefon Rehberi Projesi Gereklilikler</b></h2>
 <br>
 
-Bilgisayar�n�zda RabbitMQ Postgres kurulu olmal�d�r. E�er de�ilse Docker kurulumu yap�larak a�a��daki yol izlenebilir.
+Bilgisayarınızda RabbitMQ Postgres kurulu olmalıdır. Eğer değilse Docker kurulumu yapılarak aşağıdaki yol izlenebilir.
 
-1.) A�a��daki adres �zerinden docker indirilip kurulmal�d�r.
+1.) Aşağıdaki adres üzerinden docker indirilip kurulmalıdır.
 
 ```
 https://www.docker.com/products/docker-desktop/
@@ -40,7 +40,7 @@ https://www.docker.com/products/docker-desktop/
 
 <br>
 
-2.) Docker �zerinde Postgres kurulumu i�in a�a��daki komutu kullanabilirsiniz.
+2.) Docker üzerinde Postgres kurulumu için aşağıdaki komutu kullanabilirsiniz.
 
 ```
 docker run --name postgresql -e POSTGRES_PASSWORD=rI1l9j!p7gO@ -p 5432:5432 -d postgres
@@ -48,17 +48,17 @@ docker run --name postgresql -e POSTGRES_PASSWORD=rI1l9j!p7gO@ -p 5432:5432 -d p
 
 <br>
 
-3.) Docker �zerinde RabbitMQ kurulumu i�in a�a��daki komutu kullanabilirsiniz.
+3.) Docker üzerinde RabbitMQ kurulumu için aşağıdaki komutu kullanabilirsiniz.
 
 ```
 docker run --name rabbitmq -d -p 15672:15672 -p 5672:5672 rabbitmq:3-management
 ```
 
-<h3><b>Telefon Rehberi Projesinin �al��t�r�lmas�</b></h2>
+<h3><b>Telefon Rehberi Projesinin Çalıştırılması</b></h2>
 
 <br>
 
-1.) �ncelikle a�a��daki dizinlerde bulunan <b>appsettings.json</b> config ve path ayarlamalar�n� kendinize g�re ayarlay�n�z.
+1.) Öncelikle aşağıdaki dizinlerde bulunan <b>appsettings.json</b> config ve path ayarlamalarını kendinize göre ayarlayınız.
 
 ```
 src/Auth/API/appsettings.json
@@ -80,7 +80,7 @@ src/Gateway/API/appsettings.json
 
 <br>
 
-2.) A�a��da belirtilen pathler i�in migrationlar�n�n �al��t�r�lmas� sa�lanacakt�r. 
+2.) Aşağıda belirtilen pathler için migrationlarının çalıştırılması sağlanacaktır. 
 
 ```
 src/Auth/DataAccess
@@ -94,7 +94,7 @@ update-database
 
 <br>
 
-3.) Bu i�lemler yap�ld�ktan sonra a�a��daki servisler �al��t�r�larak t�m s�re�ler gateway api servisi �zerinden yap�labilir.
+3.) Bu işlemler yapıldıktan sonra aşağıdaki servisler çalıştırılarak tüm süreçler gateway api servisi üzerinden yapılabilir.
 
 <br><br>
 
@@ -116,14 +116,18 @@ Token Alma
 }
 ```
 
+<br>
 
-4.) Postman testi i�inde postman collection dosyalar� eklenmi�tir.
+
+4.) Postman testi içinde postman collection dosyaları eklenmiştir.
 
 
 ```
 test/TelephoneDirectory.postman_collection.json
 test/TelephoneDirectory.postman_environment.json
 ```
+
+<br>
 
 
 5.) Projenin çalışma mimarisi için aşağıdaki görsele bakabilirsiniz.
