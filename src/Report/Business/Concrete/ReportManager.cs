@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Business.Abstract;
 using Business.Constants;
+using Business.MessageContracts.Commands;
+using Business.MessageContracts;
 using Core.Aspects.Autofac.Transaction;
 using Core.Entities.DTOs;
 using Core.Utilities.Business;
@@ -65,6 +67,11 @@ namespace Business.Concrete
             _reportDal.Add(entityToAdd);
 
             //SendQuee
+            var sendEndpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri($"queue:{RabbitMQConstants.CreateReportQueueName}"));
+            await sendEndpoint.Send<ICreateReportCommand>(new
+            {
+                ReportId = entityToAdd.Id,
+            });
 
             return new SuccessResult();
         }
