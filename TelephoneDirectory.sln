@@ -6,6 +6,7 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "asset", "asset", "{29D78CB3-1282-4D86-88C3-6EFE4307FD9A}"
 	ProjectSection(SolutionItems) = preProject
 		asset\Assessment.pdf = asset\Assessment.pdf
+		asset\diyagram.jpg = asset\diyagram.jpg
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{FE8ED52D-8843-427A-B039-7FA15DE1221F}"
