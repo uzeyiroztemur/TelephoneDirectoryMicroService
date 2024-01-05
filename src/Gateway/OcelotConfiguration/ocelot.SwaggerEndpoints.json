@@ -1,0 +1,43 @@
+{
+    "SwaggerEndPoints": [
+        {
+            "Key": "auth",
+            "Config": [
+                {
+                    "Name": "Auth Web API",
+                    "Version": "v1",
+                    "Service": {
+                        "Name": "auth",
+                        "Path": "/swagger/v1/swagger.json"
+                    }
+                }
+            ]
+        },
+        {
+            "Key": "contact",
+            "Config": [
+                {
+                    "Name": "Contact Web API",
+                    "Version": "v1",
+                    "Service": {
+                        "Name": "contact",
+                        "Path": "/swagger/v1/swagger.json"
+                    }
+                }
+            ]
+        },
+        {
+            "Key": "report",
+            "Config": [
+                {
+                    "Name": "Report Web API",
+                    "Version": "v1",
+                    "Service": {
+                        "Name": "report",
+                        "Path": "/swagger/v1/swagger.json"
+                    }
+                }
+            ]
+        }
+    ]
+}
