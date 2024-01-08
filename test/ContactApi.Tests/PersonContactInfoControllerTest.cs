@@ -1,24 +1,19 @@
 ﻿using API.Controllers;
 using Business.Abstract;
-using Core.CrossCuttingConcerns.Logging;
 using Core.Entities.DTOs;
+using Core.Utilities.Test;
 using Entities.DTOs.Params;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
 using Xunit;
 
 namespace ContactApi.Tests
 {
-    public class PersonContactInfoControllerTest
+    public class PersonContactInfoControllerTest : BaseServiceTest<IPersonContactInfoService>
     {
         [Fact]
         public void Add_Returns_OkResult_When_PersonContactInfoAddedSuccessfully()
         {
-            // Arrange
-            var personContactInfoServiceMock = new Mock<IPersonContactInfoService>();
-            var loggerMock = new Mock<ILogger>();
-
-            var controller = new PersonContactInfosController(personContactInfoServiceMock.Object, loggerMock.Object);
+            var controller = new PersonContactInfosController(serviceMock.Object, loggerMock.Object);
 
             var personId = Guid.NewGuid();
             var personContactInfoForUpsertDTO = new PersonContactInfoForUpsertDTO
@@ -31,7 +26,7 @@ namespace ContactApi.Tests
             var successfulResult = new SuccessDataResult<string>("PersonContactInfo added successfully");
 
             // Setup mock service to return the expected result when called with the expected parameters
-            personContactInfoServiceMock.Setup(x => x.Add(personId, personContactInfoForUpsertDTO)).Returns(successfulResult);
+            serviceMock.Setup(x => x.Add(personId, personContactInfoForUpsertDTO)).Returns(successfulResult);
 
             // Act
             var result = controller.Add(personId, personContactInfoForUpsertDTO);
@@ -47,11 +42,7 @@ namespace ContactApi.Tests
         [Fact]
         public void Add_Returns_BadRequestResult_When_PersonContactInfoAddFails()
         {
-            // Arrange
-            var personContactInfoServiceMock = new Mock<IPersonContactInfoService>();
-            var loggerMock = new Mock<ILogger>();
-
-            var controller = new PersonContactInfosController(personContactInfoServiceMock.Object, loggerMock.Object);
+            var controller = new PersonContactInfosController(serviceMock.Object, loggerMock.Object);
 
             var personId = Guid.NewGuid();
             var personContactInfoForUpsertDTO = new PersonContactInfoForUpsertDTO
@@ -64,7 +55,7 @@ namespace ContactApi.Tests
             var errorResult = new ErrorDataResult<string>("PersonContactInfo add failed");
 
             // Setup mock service to return the error result when called with the expected parameters
-            personContactInfoServiceMock.Setup(x => x.Add(personId, personContactInfoForUpsertDTO)).Returns(errorResult);
+            serviceMock.Setup(x => x.Add(personId, personContactInfoForUpsertDTO)).Returns(errorResult);
 
             // Act
             var result = controller.Add(personId, personContactInfoForUpsertDTO);
@@ -80,11 +71,7 @@ namespace ContactApi.Tests
         [Fact]
         public void Edit_Returns_OkResult_When_PersonContactInfoUpdatedSuccessfully()
         {
-            // Arrange
-            var personContactInfoServiceMock = new Mock<IPersonContactInfoService>();
-            var loggerMock = new Mock<ILogger>();
-
-            var controller = new PersonContactInfosController(personContactInfoServiceMock.Object, loggerMock.Object);
+            var controller = new PersonContactInfosController(serviceMock.Object, loggerMock.Object);
 
             var personId = Guid.NewGuid();
             var personContactInfoId = Guid.NewGuid();
@@ -98,7 +85,7 @@ namespace ContactApi.Tests
             var successfulResult = new SuccessDataResult<string>("PersonContactInfo updated successfully");
 
             // Setup mock service to return the expected result when called with the expected parameters
-            personContactInfoServiceMock.Setup(x => x.Update(personId, personContactInfoId, personContactInfoForUpsertDTO)).Returns(successfulResult);
+            serviceMock.Setup(x => x.Update(personId, personContactInfoId, personContactInfoForUpsertDTO)).Returns(successfulResult);
 
             // Act
             var result = controller.Edit(personId, personContactInfoId, personContactInfoForUpsertDTO);
@@ -114,11 +101,7 @@ namespace ContactApi.Tests
         [Fact]
         public void Edit_Returns_BadRequestResult_When_PersonContactInfoUpdateFails()
         {
-            // Arrange
-            var personContactInfoServiceMock = new Mock<IPersonContactInfoService>();
-            var loggerMock = new Mock<ILogger>();
-
-            var controller = new PersonContactInfosController(personContactInfoServiceMock.Object, loggerMock.Object);
+            var controller = new PersonContactInfosController(serviceMock.Object, loggerMock.Object);
 
             var personId = Guid.NewGuid();
             var personContactInfoId = Guid.NewGuid();
@@ -132,7 +115,7 @@ namespace ContactApi.Tests
             var errorResult = new ErrorDataResult<string>("PersonContactInfo update failed");
 
             // Setup mock service to return the error result when called with the expected parameters
-            personContactInfoServiceMock.Setup(x => x.Update(personId, personContactInfoId, personContactInfoForUpsertDTO)).Returns(errorResult);
+            serviceMock.Setup(x => x.Update(personId, personContactInfoId, personContactInfoForUpsertDTO)).Returns(errorResult);
 
             // Act
             var result = controller.Edit(personId, personContactInfoId, personContactInfoForUpsertDTO);
@@ -148,11 +131,7 @@ namespace ContactApi.Tests
         [Fact]
         public void Delete_Returns_OkResult_When_PersonContactInfoDeletedSuccessfully()
         {
-            // Arrange
-            var personContactInfoServiceMock = new Mock<IPersonContactInfoService>();
-            var loggerMock = new Mock<ILogger>();
-
-            var controller = new PersonContactInfosController(personContactInfoServiceMock.Object, loggerMock.Object);
+            var controller = new PersonContactInfosController(serviceMock.Object, loggerMock.Object);
 
             var personId = Guid.NewGuid();
             var personContactInfoId = Guid.NewGuid();
@@ -160,7 +139,7 @@ namespace ContactApi.Tests
             var successfulResult = new SuccessDataResult<string>("PersonContactInfo deleted successfully");
 
             // Setup mock service to return the expected result when called with the expected parameters
-            personContactInfoServiceMock.Setup(x => x.Delete(personId, personContactInfoId)).Returns(successfulResult);
+            serviceMock.Setup(x => x.Delete(personId, personContactInfoId)).Returns(successfulResult);
 
             // Act
             var result = controller.Delete(personId, personContactInfoId);
@@ -176,11 +155,7 @@ namespace ContactApi.Tests
         [Fact]
         public void Delete_Returns_BadRequestResult_When_PersonContactInfoDeleteFails()
         {
-            // Arrange
-            var personContactInfoServiceMock = new Mock<IPersonContactInfoService>();
-            var loggerMock = new Mock<ILogger>();
-
-            var controller = new PersonContactInfosController(personContactInfoServiceMock.Object, loggerMock.Object);
+            var controller = new PersonContactInfosController(serviceMock.Object, loggerMock.Object);
 
             var personId = Guid.NewGuid();
             var personContactInfoId = Guid.NewGuid();
@@ -188,7 +163,7 @@ namespace ContactApi.Tests
             var errorResult = new ErrorDataResult<string>("PersonContactInfo delete failed");
 
             // Setup mock service to return the error result when called with the expected parameters
-            personContactInfoServiceMock.Setup(x => x.Delete(personId, personContactInfoId)).Returns(errorResult);
+            serviceMock.Setup(x => x.Delete(personId, personContactInfoId)).Returns(errorResult);
 
             // Act
             var result = controller.Delete(personId, personContactInfoId);

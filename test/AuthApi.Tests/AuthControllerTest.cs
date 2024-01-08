@@ -1,8 +1,8 @@
 ﻿using API.Controllers;
 using Business.Abstract;
-using Core.CrossCuttingConcerns.Logging;
 using Core.Entities.DTOs;
 using Core.Utilities.Security;
+using Core.Utilities.Test;
 using Entities.DTOs.Params;
 using Entities.DTOs.Results;
 using Microsoft.AspNetCore.Mvc;
@@ -11,16 +11,12 @@ using Xunit;
 
 namespace AuthApi.Tests
 {
-    public class AuthControllerTest
+    public class AuthControllerTest : BaseServiceTest<IAuthService>
     {
         [Fact]
         public void Login_Returns_BadRequest_When_Login_Fails()
         {
-            // Arrange
-            var authServiceMock = new Mock<IAuthService>();
-            var loggerMock = new Mock<ILogger>();
-
-            var authController = new AuthController(authServiceMock.Object, loggerMock.Object);
+            var authController = new AuthController(serviceMock.Object, loggerMock.Object);
 
             var userForLoginDTO = new UserForLoginDTO
             {
@@ -29,7 +25,7 @@ namespace AuthApi.Tests
             };
 
             var failedResult = new ErrorDataResult<UserForViewDTO>("Login failed");
-            authServiceMock.Setup(x => x.Login(It.IsAny<UserForLoginDTO>())).Returns(failedResult);
+            serviceMock.Setup(x => x.Login(It.IsAny<UserForLoginDTO>())).Returns(failedResult);
 
             // Act
             var result = authController.Login(userForLoginDTO);
@@ -43,11 +39,7 @@ namespace AuthApi.Tests
         [Fact]
         public void Login_Returns_Token_When_Login_Succeeds()
         {
-            // Arrange
-            var authServiceMock = new Mock<IAuthService>();
-            var loggerMock = new Mock<ILogger>();
-
-            var authController = new AuthController(authServiceMock.Object, loggerMock.Object);
+            var authController = new AuthController(serviceMock.Object, loggerMock.Object);
 
             var userForLoginDTO = new UserForLoginDTO
             {
@@ -58,10 +50,10 @@ namespace AuthApi.Tests
             var expectedToken = new AccessToken { Token = "testtoken" };
 
             var successfulLoginResult = new SuccessDataResult<UserForViewDTO>(new UserForViewDTO { Token = expectedToken });
-            authServiceMock.Setup(x => x.Login(It.IsAny<UserForLoginDTO>())).Returns(successfulLoginResult);
+            serviceMock.Setup(x => x.Login(It.IsAny<UserForLoginDTO>())).Returns(successfulLoginResult);
 
             var successfulTokenResult = new SuccessDataResult<AccessToken>(expectedToken);
-            authServiceMock.Setup(x => x.CreateAccessToken(It.IsAny<UserForViewDTO>())).Returns(successfulTokenResult);
+            serviceMock.Setup(x => x.CreateAccessToken(It.IsAny<UserForViewDTO>())).Returns(successfulTokenResult);
 
             // Act
             var result = authController.Login(userForLoginDTO);

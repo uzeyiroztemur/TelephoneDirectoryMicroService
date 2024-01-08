@@ -1,7 +1,7 @@
 ﻿using API.Controllers;
 using Business.Abstract;
-using Core.CrossCuttingConcerns.Logging;
 using Core.Entities.DTOs;
+using Core.Utilities.Test;
 using Entities.DTOs.Params;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -9,16 +9,12 @@ using Xunit;
 
 namespace AuthApi.Tests
 {
-    public class AccountAuthControllerTest
+    public class AccountAuthControllerTest : BaseServiceTest<IAuthService>
     {
         [Fact]
         public void ChangePassword_Returns_OkResult_When_ChangePassword_Succeeds()
         {
-            // Arrange
-            var authServiceMock = new Mock<IAuthService>();
-            var loggerMock = new Mock<ILogger>();
-
-            var accountController = new AccountController(authServiceMock.Object, loggerMock.Object);
+            var accountController = new AccountController(serviceMock.Object, loggerMock.Object);
 
             var passwordForChangeDTO = new PasswordForChangeDTO
             {
@@ -28,7 +24,7 @@ namespace AuthApi.Tests
             };
 
             var successfulResult = new SuccessResult("Password changed successfully");
-            authServiceMock.Setup(x => x.ChangePassword(It.IsAny<PasswordForChangeDTO>())).Returns(successfulResult);
+            serviceMock.Setup(x => x.ChangePassword(It.IsAny<PasswordForChangeDTO>())).Returns(successfulResult);
 
             // Act
             var result = accountController.ChangePassword(passwordForChangeDTO);
@@ -44,11 +40,7 @@ namespace AuthApi.Tests
         [Fact]
         public void ChangePassword_Returns_BadRequestResult_When_ChangePassword_Fails()
         {
-            // Arrange
-            var authServiceMock = new Mock<IAuthService>();
-            var loggerMock = new Mock<ILogger>();
-
-            var accountController = new AccountController(authServiceMock.Object, loggerMock.Object);
+            var accountController = new AccountController(serviceMock.Object, loggerMock.Object);
 
             var passwordForChangeDTO = new PasswordForChangeDTO
             {
@@ -58,7 +50,7 @@ namespace AuthApi.Tests
             };
 
             var errorResult = new ErrorResult("Failed to change password");
-            authServiceMock.Setup(x => x.ChangePassword(It.IsAny<PasswordForChangeDTO>())).Returns(errorResult);
+            serviceMock.Setup(x => x.ChangePassword(It.IsAny<PasswordForChangeDTO>())).Returns(errorResult);
 
             // Act
             var result = accountController.ChangePassword(passwordForChangeDTO);

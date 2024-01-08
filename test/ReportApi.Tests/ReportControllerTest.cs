@@ -1,8 +1,8 @@
 ﻿using API.Controllers;
 using Business.Abstract;
-using Core.CrossCuttingConcerns.Logging;
 using Core.Entities.DTOs;
 using Core.Utilities.Filtering.DataTable;
+using Core.Utilities.Test;
 using Entities.DTOs.Results;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -10,16 +10,12 @@ using Xunit;
 
 namespace ReportApi.Tests
 {
-    public class ReportControllerTest
+    public class ReportControllerTest : BaseServiceTest<IReportService>
     {
         [Fact]
         public void List_Returns_OkResult_When_ReportList_Successful()
         {
-            // Arrange
-            var reportServiceMock = new Mock<IReportService>();
-            var loggerMock = new Mock<ILogger>();
-
-            var controller = new ReportsController(reportServiceMock.Object, loggerMock.Object);
+            var controller = new ReportsController(serviceMock.Object, loggerMock.Object);
 
             var options = new DataTableOptions { };
 
@@ -39,7 +35,7 @@ namespace ReportApi.Tests
                 Message = null
             };
 
-            reportServiceMock.Setup(x => x.List(options)).Returns(successfulResult);
+            serviceMock.Setup(x => x.List(options)).Returns(successfulResult);
 
             // Act
             var result = controller.List(options);
@@ -55,16 +51,12 @@ namespace ReportApi.Tests
         [Fact]
         public void List_Returns_BadRequestResult_When_ReportList_Fails()
         {
-            // Arrange
-            var reportServiceMock = new Mock<IReportService>();
-            var loggerMock = new Mock<ILogger>();
-
-            var controller = new ReportsController(reportServiceMock.Object, loggerMock.Object);
+            var controller = new ReportsController(serviceMock.Object, loggerMock.Object);
 
             var options = new DataTableOptions { };
 
             var errorResult = new ErrorDataResult<IList<ReportForViewDTO>>();
-            reportServiceMock.Setup(x => x.List(options)).Returns(errorResult);
+            serviceMock.Setup(x => x.List(options)).Returns(errorResult);
 
             // Act
             var result = controller.List(options);
@@ -80,11 +72,7 @@ namespace ReportApi.Tests
         [Fact]
         public void Get_Returns_OkResult_When_ReportFound()
         {
-            // Arrange
-            var reportServiceMock = new Mock<IReportService>();
-            var loggerMock = new Mock<ILogger>();
-
-            var controller = new ReportsController(reportServiceMock.Object, loggerMock.Object);
+            var controller = new ReportsController(serviceMock.Object, loggerMock.Object);
 
             var reportId = Guid.NewGuid();
 
@@ -112,7 +100,7 @@ namespace ReportApi.Tests
                 Message = null
             };
 
-            reportServiceMock.Setup(x => x.Get(reportId)).Returns(successfulResult);
+            serviceMock.Setup(x => x.Get(reportId)).Returns(successfulResult);
 
             // Act
             var result = controller.Get(reportId);
@@ -128,18 +116,14 @@ namespace ReportApi.Tests
         [Fact]
         public void Get_Returns_BadRequestResult_When_ReportNotFound()
         {
-            // Arrange
-            var reportServiceMock = new Mock<IReportService>();
-            var loggerMock = new Mock<ILogger>();
-
-            var controller = new ReportsController(reportServiceMock.Object, loggerMock.Object);
+            var controller = new ReportsController(serviceMock.Object, loggerMock.Object);
 
             var reportId = Guid.NewGuid();
 
             var errorResult = new ErrorDataResult<ReportForPreviewDTO>("Report not found");
 
             // Setup mock service to return the error result when called with the expected model
-            reportServiceMock.Setup(x => x.Get(reportId)).Returns(errorResult);
+            serviceMock.Setup(x => x.Get(reportId)).Returns(errorResult);
 
             // Act
             var result = controller.Get(reportId);
@@ -155,16 +139,12 @@ namespace ReportApi.Tests
         [Fact]
         public async Task Create_Returns_OkResult_When_ReportCreatedSuccessfully()
         {
-            // Arrange
-            var reportServiceMock = new Mock<IReportService>();
-            var loggerMock = new Mock<ILogger>();
-
-            var controller = new ReportsController(reportServiceMock.Object, loggerMock.Object);
+            var controller = new ReportsController(serviceMock.Object, loggerMock.Object);
 
             var successfulResult = new SuccessDataResult<string>("Report created successfully");
 
             // Setup mock service to return the expected result
-            reportServiceMock.Setup(x => x.Create()).ReturnsAsync(successfulResult);
+            serviceMock.Setup(x => x.Create()).ReturnsAsync(successfulResult);
 
             // Act
             var result = await controller.Create();
@@ -180,16 +160,12 @@ namespace ReportApi.Tests
         [Fact]
         public async Task Create_Returns_BadRequestResult_When_ReportCreateFails()
         {
-            // Arrange
-            var reportServiceMock = new Mock<IReportService>();
-            var loggerMock = new Mock<ILogger>();
-
-            var controller = new ReportsController(reportServiceMock.Object, loggerMock.Object);
+            var controller = new ReportsController(serviceMock.Object, loggerMock.Object);
 
             var errorResult = new ErrorDataResult<string>("Report creation failed");
 
             // Setup mock service to return the error result
-            reportServiceMock.Setup(x => x.Create()).ReturnsAsync(errorResult);
+            serviceMock.Setup(x => x.Create()).ReturnsAsync(errorResult);
 
             // Act
             var result = await controller.Create();
