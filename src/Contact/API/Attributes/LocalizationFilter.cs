@@ -7,20 +7,18 @@ namespace API.Attributes
     {
         public void OnActionExecuting(ActionExecutingContext context)
         {
-            var cultureKey = context.HttpContext.Request.Headers["Language-Code"];
-            if (!string.IsNullOrEmpty(cultureKey))
+            var cultureKey = "tr-TR";
+            if (!string.IsNullOrEmpty(context.HttpContext.Request.Headers["Language-Code"]))
             {
-                if (cultureKey.ToString().ToUpper() == "EN")
+                if (context.HttpContext.Request.Headers["Language-Code"].ToString().ToUpper() == "EN")
                     cultureKey = "en-US";
-                else
-                    cultureKey = "tr-TR";
+            }
 
-                if (DoesCultureExist(cultureKey))
-                {
-                    var culture = new CultureInfo(cultureKey);
-                    Thread.CurrentThread.CurrentCulture = culture;
-                    Thread.CurrentThread.CurrentUICulture = culture;
-                }
+            if (DoesCultureExist(cultureKey))
+            {
+                var culture = new CultureInfo(cultureKey);
+                Thread.CurrentThread.CurrentCulture = culture;
+                Thread.CurrentThread.CurrentUICulture = culture;
             }
         }
 
