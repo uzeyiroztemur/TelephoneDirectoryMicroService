@@ -1,0 +1,84 @@
+version: '3.9'
+services:  
+    postgres:
+        image: postgres
+        hostname: postgres
+        restart: always
+        environment:
+            POSTGRES_PASSWORD: rI1l9j!p7gO@
+            POSTGRES_USER: postgres
+        ports: 
+            - 5432:5432
+            
+    rabbitmq:
+        image: rabbitmq:3-management
+        container_name: rabbitmq
+        restart: always
+        ports: 
+            - 5672:5672
+            - 15672:15672       
+    
+    auth-api:
+        image: ${DOCKER_REGISTRY-}auth.api
+        environment: 
+            - "ConnectionStrings:PostgreSql=User ID=postgres;Password=rI1l9j!p7gO@;Server=postgres;Port=5432;Database=UserDb;Integrated Security=true;Pooling=true;"        
+        build:
+            dockerfile: src/Auth/API/Dockerfile
+        restart: always
+        depends_on:
+            - postgres
+            - rabbitmq
+        ports: 
+            - 5001:80
+            
+    contact-api:
+        image: ${DOCKER_REGISTRY-}contact.api
+        environment: 
+            - "ConnectionStrings:PostgreSql=User ID=postgres;Password=rI1l9j!p7gO@;Server=postgres;Port=5432;Database=ContactDb;Integrated Security=true;Pooling=true;"
+        build:
+            dockerfile: src/Contact/API/Dockerfile
+        restart: always
+        depends_on:
+            - postgres
+            - rabbitmq
+            - auth-api
+        ports: 
+            - 5002:80            
+
+    report-api:
+        image: ${DOCKER_REGISTRY-}report.api
+        environment: 
+            - "ConnectionStrings:PostgreSql=User ID=postgres;Password=rI1l9j!p7gO@;Server=postgres;Port=5432;Database=ReportDb;Integrated Security=true;Pooling=true;"
+            - "RabbitMQOptions:Uri=amqp://rabbitmq"
+            - "ContactApiOptions:Uri=http://contact-api/api"
+        build:
+            dockerfile: src/Report/API/Dockerfile
+        restart: always
+        depends_on:
+            - postgres
+            - rabbitmq
+            - auth-api
+            - contact-api
+        ports: 
+            - 5003:80
+            
+    gateway-api:
+        image: ${docker_registry-}gateway.api
+        environment: 
+            - "Services:auth:DownstreamPath=http://auth-api"
+            - "Services:contact:DownstreamPath=http://contact-api"
+            - "Services:report:DownstreamPath=http://report-api"
+            - "HealthChecks-UI:HealthChecks[0].Uri=http://auth-api/health"
+            - "HealthChecks-UI:HealthChecks[1].Uri=http://contact-api/health"
+            - "HealthChecks-UI:HealthChecks[2].Uri=http://report-api/health"
+        build:
+            dockerfile: src/Gateway/Dockerfile
+        restart: always
+        depends_on:
+            - postgres
+            - rabbitmq
+            - auth-api
+            - contact-api
+            - report-api
+        ports: 
+            - 5000:80
