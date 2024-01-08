@@ -135,3 +135,15 @@ test/TelephoneDirectory.postman_environment.json
 ```
 asset/diyagram.jpg
 ```
+
+
+<br>
+
+
+6.) Docker ile çalıştırmak için aşağıdaki komutları kullanabilirsiniz.
+
+```
+docker-compose build
+docker-compose up
+```
+
