@@ -64,13 +64,11 @@ services:
             
     gateway-api:
         image: ${docker_registry-}gateway.api
-        environment: 
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Production
             - "Services:auth:DownstreamPath=http://auth-api"
             - "Services:contact:DownstreamPath=http://contact-api"
             - "Services:report:DownstreamPath=http://report-api"
-            - "HealthChecks-UI:HealthChecks[0].Uri=http://auth-api/health"
-            - "HealthChecks-UI:HealthChecks[1].Uri=http://contact-api/health"
-            - "HealthChecks-UI:HealthChecks[2].Uri=http://report-api/health"
         build:
             dockerfile: src/Gateway/Dockerfile
         restart: always
