@@ -13,6 +13,6 @@ namespace Business.Abstract
         IResult Update(Guid id, PersonForUpsertDTO model);
         IResult Delete(Guid id);
 
-        IDataResult<IList<PersonReportForViewDTO>> Report();
+        Task<IDataResult<IList<PersonReportForViewDTO>>> Report();
     }
 }

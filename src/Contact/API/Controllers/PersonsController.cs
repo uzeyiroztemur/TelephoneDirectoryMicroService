@@ -69,10 +69,10 @@ namespace API.Controllers
 
 
         [HttpGet("report")]
-        public IActionResult Report()
+        public async Task<IActionResult> Report()
         {
             _logger.Info("Get person report");
-            var result = _personService.Report();
+            var result = await _personService.Report();
             _logger.HandleResult(result, "Get person report");
 
             return ActionResultInstance(result);

@@ -112,9 +112,9 @@ namespace Business.Concrete
         }
 
 
-        public IDataResult<IList<PersonReportForViewDTO>> Report()
+        public async Task<IDataResult<IList<PersonReportForViewDTO>>> Report()
         {
-            var report = _personDal.Report();
+            var report = await _personDal.Report();
             if (report != null)
                 return new SuccessDataResult<IList<PersonReportForViewDTO>>(report);
 

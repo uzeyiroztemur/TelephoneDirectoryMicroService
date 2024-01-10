@@ -6,6 +6,7 @@ using Core.Utilities.Test;
 using Entities.DTOs.Params;
 using Entities.DTOs.Results;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
 using Xunit;
 
 namespace ContactApi.Tests
@@ -296,7 +297,7 @@ namespace ContactApi.Tests
         }
 
         [Fact]
-        public void Report_Returns_OkResult_When_PersonReportSuccessful()
+        public async Task Report_Returns_OkResult_When_PersonReportSuccessful()
         {
             var controller = new PersonsController(serviceMock.Object, loggerMock.Object);
 
@@ -317,10 +318,10 @@ namespace ContactApi.Tests
             };
 
             // Setup mock service to return the expected result
-            serviceMock.Setup(x => x.Report()).Returns(successfulResult);
+            serviceMock.Setup(x => x.Report()).ReturnsAsync(successfulResult);
 
             // Act
-            var result = controller.Report();
+            var result = await controller.Report();
 
             // Assert
             Assert.IsType<OkObjectResult>(result);
@@ -331,17 +332,17 @@ namespace ContactApi.Tests
         }
 
         [Fact]
-        public void Report_Returns_BadRequestResult_When_PersonReportFails()
+        public async Task Report_Returns_BadRequestResult_When_PersonReportFails()
         {
             var controller = new PersonsController(serviceMock.Object, loggerMock.Object);
 
             var errorResult = new ErrorDataResult<IList<PersonReportForViewDTO>>();
 
             // Setup mock service to return the error result
-            serviceMock.Setup(x => x.Report()).Returns(errorResult);
+            serviceMock.Setup(x => x.Report()).ReturnsAsync(errorResult);
 
             // Act
-            var result = controller.Report();
+            var result = await controller.Report();
 
             // Assert
             Assert.IsType<BadRequestObjectResult>(result);

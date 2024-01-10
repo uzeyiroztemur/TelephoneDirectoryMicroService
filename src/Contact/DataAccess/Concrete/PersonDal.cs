@@ -68,11 +68,11 @@ namespace DataAccess.Concrete
             return query.AsNoTracking().FirstOrDefault();
         }
 
-        public IList<PersonReportForViewDTO> Report()
+        public async Task<IList<PersonReportForViewDTO>> Report()
         {
             using var context = new AppDbContext();
 
-            return context.Persons
+            return await context.Persons
                 .Where(c => !c.IsDeleted)
                 .SelectMany(x => x.PersonContacts)
                 .Where(y => !y.IsDeleted && y.InfoType == ContactInfoType.Location)
@@ -88,7 +88,7 @@ namespace DataAccess.Concrete
                                            .Count(),
                 })
                 .AsNoTracking()
-                .ToList();
+                .ToListAsync();
         }
     }
 }

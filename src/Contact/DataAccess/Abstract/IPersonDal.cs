@@ -10,6 +10,6 @@ namespace DataAccess.Abstract
     {
         IDataResult<IList<PersonForViewDTO>> List(Filter filter);
         PersonForPreviewDTO Get(Guid id);
-        IList<PersonReportForViewDTO> Report();
+        Task<IList<PersonReportForViewDTO>> Report();
     }
 }
