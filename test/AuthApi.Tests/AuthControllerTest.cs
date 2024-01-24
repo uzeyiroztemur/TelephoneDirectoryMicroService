@@ -14,7 +14,7 @@ namespace AuthApi.Tests
     public class AuthControllerTest : BaseServiceTest<IAuthService>
     {
         [Fact]
-        public void Login_Returns_BadRequest_When_Login_Fails()
+        public async Task Login_Returns_BadRequest_When_Login_Fails()
         {
             var authController = new AuthController(serviceMock.Object, loggerMock.Object);
 
@@ -25,10 +25,10 @@ namespace AuthApi.Tests
             };
 
             var failedResult = new ErrorDataResult<UserForViewDTO>("Login failed");
-            serviceMock.Setup(x => x.Login(It.IsAny<UserForLoginDTO>())).Returns(failedResult);
+            serviceMock.Setup(x => x.LoginAsync(It.IsAny<UserForLoginDTO>())).ReturnsAsync(failedResult);
 
             // Act
-            var result = authController.Login(userForLoginDTO);
+            var result = await authController.Login(userForLoginDTO);
 
             // Assert
             Assert.IsType<BadRequestObjectResult>(result);
@@ -37,7 +37,7 @@ namespace AuthApi.Tests
         }
 
         [Fact]
-        public void Login_Returns_Token_When_Login_Succeeds()
+        public async Task Login_Returns_Token_When_Login_Succeeds()
         {
             var authController = new AuthController(serviceMock.Object, loggerMock.Object);
 
@@ -50,13 +50,13 @@ namespace AuthApi.Tests
             var expectedToken = new AccessToken { Token = "testtoken" };
 
             var successfulLoginResult = new SuccessDataResult<UserForViewDTO>(new UserForViewDTO { Token = expectedToken });
-            serviceMock.Setup(x => x.Login(It.IsAny<UserForLoginDTO>())).Returns(successfulLoginResult);
+            serviceMock.Setup(x => x.LoginAsync(It.IsAny<UserForLoginDTO>())).ReturnsAsync(successfulLoginResult);
 
             var successfulTokenResult = new SuccessDataResult<AccessToken>(expectedToken);
-            serviceMock.Setup(x => x.CreateAccessToken(It.IsAny<UserForViewDTO>())).Returns(successfulTokenResult);
+            serviceMock.Setup(x => x.CreateAccessTokenAsync(It.IsAny<UserForViewDTO>())).ReturnsAsync(successfulTokenResult);
 
             // Act
-            var result = authController.Login(userForLoginDTO);
+            var result = await authController.Login(userForLoginDTO);
 
             // Assert
             Assert.IsType<OkObjectResult>(result);

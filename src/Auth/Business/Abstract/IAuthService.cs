@@ -7,8 +7,8 @@ namespace Business.Abstract
 {
     public interface IAuthService
     {
-        IDataResult<UserForViewDTO> Login(UserForLoginDTO userForLoginDTO);
-        IDataResult<AccessToken> CreateAccessToken(UserForViewDTO userForViewDTO);
-        IResult ChangePassword(PasswordForChangeDTO passwordForChangeDTO);
+        Task<IDataResult<UserForViewDTO>> LoginAsync(UserForLoginDTO userForLoginDTO);
+        Task<IDataResult<AccessToken>> CreateAccessTokenAsync(UserForViewDTO userForViewDTO);
+        Task<IResult> ChangePasswordAsync(PasswordForChangeDTO passwordForChangeDTO);
     }
 }

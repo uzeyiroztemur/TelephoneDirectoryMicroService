@@ -19,16 +19,16 @@ namespace API.Controllers
 
         [AllowAnonymous]
         [HttpPost("login")]
-        public IActionResult Login([FromBody] UserForLoginDTO model)
+        public async Task<IActionResult> Login([FromBody] UserForLoginDTO model)
         {
             _logger.Info($"User login in {model.UserName}");
-            var userToLogin = _authService.Login(model);
+            var userToLogin = await _authService.LoginAsync(model);
             _logger.HandleResult(userToLogin, $"User signed in {model.UserName}");
 
             if (!userToLogin.Success)
                 return BadRequest(userToLogin);
 
-            var result = _authService.CreateAccessToken(userToLogin.Data);
+            var result = await _authService.CreateAccessTokenAsync(userToLogin.Data);
 
             _logger.HandleResult(result, $"Creating token {model.UserName}");
 

@@ -16,24 +16,22 @@ namespace Business.Concrete
             _passwordResetDal = passwordResetDal;
         }
 
-        public IDataResult<UserPasswordReset> Get(Guid userId)
+        public async Task<IDataResult<UserPasswordReset>> GetAsync(Guid userId)
         {
-            var result = _passwordResetDal.GetLastRequest(userId);
+            var result = await _passwordResetDal.GetLastRequestAsync(userId);
             if (result.NotNull())
-            {
                 return new SuccessDataResult<UserPasswordReset>(result);
-            }
 
             return new ErrorDataResult<UserPasswordReset>(Messages.RecordNotFound);
         }
 
-        public IResult Update(byte[] passwordHash,bool? isChanged)
+        public async Task<IResult> UpdateAsync(byte[] passwordHash)
         {
-            var update = _passwordResetDal.Get(x => x.PasswordHash == passwordHash);
+            var update = await _passwordResetDal.GetAsync(x => x.PasswordHash == passwordHash);
             if (update != null)
             {
                 update.IsChanged = true;
-                _passwordResetDal.Update(update);
+                await _passwordResetDal.UpdateAsync(update);
                 return new SuccessResult();
             }
 

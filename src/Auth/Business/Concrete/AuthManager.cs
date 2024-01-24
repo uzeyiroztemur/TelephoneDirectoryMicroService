@@ -33,7 +33,7 @@ namespace Business.Concrete
         }
 
         #region Helper
-        private IResult HandleLockdown(User user)
+        private async Task<IResult> HandleLockdown(User user)
         {
             var lockdownTime = 15;
             var accessFailedLimit = 5; //Parametreden alınabilir.
@@ -44,7 +44,7 @@ namespace Business.Concrete
                 user.LockoutEndDateUtc = DateTime.UtcNow.AddMinutes(lockdownTime);
             }
 
-            var lockdownResult = _userService.UpdateAccountLockDown(user.Id, new LockdownForAccountDTO
+            var lockdownResult = await _userService.UpdateAccountLockDownAsync(user.Id, new LockdownForAccountDTO
             {
                 AccessFailedCount = user.AccessFailedCount,
                 LockoutEnabled = user.LockoutEnabled,
@@ -54,9 +54,7 @@ namespace Business.Concrete
             if (lockdownResult.Success)
             {
                 if (user.LockoutEnabled)
-                {
                     return new ErrorResult(Messages.UserAccountLockeddown.Replace("{Minutes}", lockdownTime.ToString()));
-                }
 
                 return new SuccessResult();
             }
@@ -71,7 +69,7 @@ namespace Business.Concrete
             var minutesLeft = Math.Round(diff.TotalMinutes);
             return new ErrorResult(Messages.UserAccountLockeddown.Replace("{Minutes}", minutesLeft.ToString()));
         }
-        private IResult CheckLockdown(User user)
+        private async Task<IResult> CheckLockdown(User user)
         {
             if (user.LockoutEnabled)
             {
@@ -81,16 +79,15 @@ namespace Business.Concrete
                     user.LockoutEndDateUtc = null;
                     user.AccessFailedCount = 0;
 
-                    var lockdownResult = _userService.UpdateAccountLockDown(user.Id, new LockdownForAccountDTO
+                    var lockdownResult = await _userService.UpdateAccountLockDownAsync(user.Id, new LockdownForAccountDTO
                     {
                         AccessFailedCount = user.AccessFailedCount,
                         LockoutEnabled = user.LockoutEnabled,
                         LockoutEndDateUtc = user.LockoutEndDateUtc
                     });
+
                     if (!lockdownResult.Success)
-                    {
                         return new ErrorResult(lockdownResult.Message);
-                    }
                 }
                 else
                 {
@@ -104,7 +101,6 @@ namespace Business.Concrete
         private ClientInfo ParseUserAgent(string userAgent)
         {
             var uaParser = Parser.GetDefault();
-
             return uaParser.Parse(userAgent);
         }
         private string GetVersion(string[] versions)
@@ -114,9 +110,9 @@ namespace Business.Concrete
         #endregion
 
         [ValidationAspect(typeof(UserForLoginValidator), Priority = 1)]
-        public IDataResult<UserForViewDTO> Login(UserForLoginDTO userForLoginDTO)
+        public async Task<IDataResult<UserForViewDTO>> LoginAsync(UserForLoginDTO userForLoginDTO)
         {
-            var userToCheck = _userService.GetByUserName(userForLoginDTO.UserName);
+            var userToCheck = await _userService.GetByUserNameAsync(userForLoginDTO.UserName);
             if (userToCheck == null)
                 return new ErrorDataResult<UserForViewDTO>(Messages.UserNotFound);
 
@@ -125,7 +121,7 @@ namespace Business.Concrete
                 return new ErrorDataResult<UserForViewDTO>(Messages.PasswordUndefined);
 
             // hesap kilit kontrolü
-            var lockdownResult = CheckLockdown(userToCheck);
+            var lockdownResult = await CheckLockdown(userToCheck);
             if (!lockdownResult.Success)
                 return new ErrorDataResult<UserForViewDTO>(lockdownResult.Message);
 
@@ -133,19 +129,18 @@ namespace Business.Concrete
             var passwordMatch = false;
             if (!HashingHelper.VerifyPasswordHash(userForLoginDTO.Password, userToCheck.PasswordHash, userToCheck.PasswordSalt))
             {
-                var resetResult = _passwordResetService.Get(userToCheck.Id);
+                var resetResult = await _passwordResetService.GetAsync(userToCheck.Id);
                 if (resetResult.Success)
                 {
                     if (HashingHelper.VerifyPasswordHash(userForLoginDTO.Password, resetResult.Data.PasswordHash, resetResult.Data.PasswordSalt))
                     {
                         if (resetResult.Data.IsChanged != true)
                         {
-                            _passwordResetService.Update(resetResult.Data.PasswordHash, true);
-                            var updateResult = _userService.UpdatePassword(userToCheck.Id, resetResult.Data.PasswordHash, resetResult.Data.PasswordSalt);
+                            await _passwordResetService.UpdateAsync(resetResult.Data.PasswordHash);
+
+                            var updateResult = await _userService.UpdatePasswordAsync(userToCheck.Id, resetResult.Data.PasswordHash, resetResult.Data.PasswordSalt);
                             if (updateResult.Success)
-                            {
                                 passwordMatch = true;
-                            }
                         }
 
                     }
@@ -159,7 +154,7 @@ namespace Business.Concrete
             // Yanlış şifrede hesap kilitlenme kontrolü
             if (!passwordMatch)
             {
-                var lockdownHandleResult = HandleLockdown(userToCheck);
+                var lockdownHandleResult = await HandleLockdown(userToCheck);
                 if (!lockdownHandleResult.Success)
                     return new ErrorDataResult<UserForViewDTO>(lockdownHandleResult.Message);
 
@@ -167,17 +162,17 @@ namespace Business.Concrete
             }
             else
             {
-                _userService.UpdateAccountLockDown(userToCheck.Id, new LockdownForAccountDTO { AccessFailedCount = 0, LockoutEnabled = false, LockoutEndDateUtc = null });
+                await _userService.UpdateAccountLockDownAsync(userToCheck.Id, new LockdownForAccountDTO { AccessFailedCount = 0, LockoutEnabled = false, LockoutEndDateUtc = null });
             }
 
             // Son şifre değiştirme sıklığı kontrolü
-            var user = _userService.GetByUserName(userForLoginDTO.UserName);
+            var user = await _userService.GetByUserNameAsync(userForLoginDTO.UserName);
             var passwordChangeFrequency = 120; //Parametreden getirilebilir.
             var dateDiff = DateTime.Now - user.LastPasswordChangeDate;
             if (dateDiff.TotalDays >= passwordChangeFrequency)
                 return new ErrorDataResult<UserForViewDTO>(Messages.UserMustChangePassword);
 
-            var userToReturn = _userService.GetByUserNameForView(userForLoginDTO.UserName);
+            var userToReturn = await _userService.GetByUserNameForViewAsync(userForLoginDTO.UserName);
             if (userToReturn == null)
                 return new ErrorDataResult<UserForViewDTO>(Messages.UserNotFound);
 
@@ -221,7 +216,7 @@ namespace Business.Concrete
 
             var browserName = clientInfo.UA.Family.NotEmpty() ? clientInfo.UA.Family : null;
 
-            var deviceResult = _userDeviceService.Upsert(deviceForLogin, ipAddress, browserName);
+            var deviceResult = await _userDeviceService.UpsertAsync(deviceForLogin, ipAddress, browserName);
             if (!deviceResult.Success)
                 return new ErrorDataResult<UserForViewDTO>(deviceResult.Message);
 
@@ -240,27 +235,28 @@ namespace Business.Concrete
                 UserDeviceId = deviceResult.Data.Id,
             };
 
-            var logResult = _userLoginService.Log(detailForLogin);
+            var logResult = await _userLoginService.LogAsync(detailForLogin);
             if (!logResult.Success)
                 return new ErrorDataResult<UserForViewDTO>(logResult.Message);
 
             return new SuccessDataResult<UserForViewDTO>(userToReturn, Messages.UserSuccessfullLogin);
         }
 
-        public IDataResult<AccessToken> CreateAccessToken(UserForViewDTO userForViewDTO)
+        public async Task<IDataResult<AccessToken>> CreateAccessTokenAsync(UserForViewDTO userForViewDTO)
         {
             var accessToken = _tokenHelper.CreateToken(new UserClaims
             {
                 Id = userForViewDTO.Id,
                 Name = userForViewDTO.Name,
             });
-            return new SuccessDataResult<AccessToken>(accessToken, Messages.UserAccessTokenCreated);
+
+            return await Task.FromResult(new SuccessDataResult<AccessToken>(accessToken, Messages.UserAccessTokenCreated));
         }
 
         [ValidationAspect(typeof(PasswordForChangeValidator), Priority = 1)]
-        public IResult ChangePassword(PasswordForChangeDTO passwordForChangeDTO)
+        public async Task<IResult> ChangePasswordAsync(PasswordForChangeDTO passwordForChangeDTO)
         {
-            return _userService.ChangePassword(passwordForChangeDTO);
+            return await _userService.ChangePasswordAsync(passwordForChangeDTO);
         }
     }
 }

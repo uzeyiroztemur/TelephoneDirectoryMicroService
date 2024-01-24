@@ -10,14 +10,13 @@ namespace DataAccess.Concrete
 {
     public class UserDal : EfEntityRepositoryBase<User, AppDbContext>, IUserDal
     {
-        public UserForUpsertDTO GetForUpsert(Guid id, Guid currentUserId)
+        public async Task<UserForUpsertDTO> GetForUpsertAsync(Guid id)
         {
             using var context = new AppDbContext();
 
 
             var query = from s in context.Users
-                        where (!s.IsDeleted)
-                            && (s.Id == id)
+                        where (s.Id == id)
                         select new UserForUpsertDTO
                         {
                             Id = s.Id,
@@ -27,14 +26,14 @@ namespace DataAccess.Concrete
                             IsActive = s.IsActive,
                         };
 
-            return query.AsNoTracking().FirstOrDefault();
+            return await query.AsNoTracking().FirstOrDefaultAsync();
         }
 
-        public UserForViewDTO GetByUserName(string userName)
+        public async Task<UserForViewDTO> GetByUserNameAsync(string userName)
         {
             using var context = new AppDbContext();
 
-            var query = from user in context.Users.Where(w => w.IsActive && !w.IsDeleted)
+            var query = from user in context.Users.Where(w => w.IsActive)
                         where user.UserName == userName
                         select new UserForViewDTO
                         {
@@ -42,7 +41,7 @@ namespace DataAccess.Concrete
                             Name = $"{user.FirstName} {user.LastName}",
                         };
 
-            return query.AsNoTracking().FirstOrDefault();
+            return await query.AsNoTracking().FirstOrDefaultAsync();
         }
     }
 }

@@ -5,6 +5,6 @@ namespace Business.Abstract
 {
     public interface IUserLoginService
     {
-        IResult Log(DetailForLoginDTO detailForLoginDTO);
+        Task<IResult> LogAsync(DetailForLoginDTO detailForLoginDTO);
     }
 }

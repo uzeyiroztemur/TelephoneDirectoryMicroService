@@ -7,7 +7,7 @@ namespace DataAccess.Abstract
 {
     public interface IUserDal : IEntityRepository<User>
     {
-        UserForViewDTO GetByUserName(string userName);
-        UserForUpsertDTO GetForUpsert(Guid id, Guid currentUserId);
+        Task<UserForViewDTO> GetByUserNameAsync(string userName);
+        Task<UserForUpsertDTO> GetForUpsertAsync(Guid id);
     }
 }

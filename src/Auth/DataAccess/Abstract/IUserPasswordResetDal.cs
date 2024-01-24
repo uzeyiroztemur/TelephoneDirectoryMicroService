@@ -5,6 +5,6 @@ namespace DataAccess.Abstract
 {
     public interface IUserPasswordResetDal : IEntityRepository<UserPasswordReset>
     {
-        UserPasswordReset GetLastRequest(Guid userId);
+        Task<UserPasswordReset> GetLastRequestAsync(Guid userId);
     }
 }

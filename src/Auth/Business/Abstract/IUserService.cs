@@ -7,10 +7,10 @@ namespace Business.Abstract
 {
     public interface IUserService
     {
-        IResult UpdateAccountLockDown(Guid id, LockdownForAccountDTO lockdownForAccountDTO);
-        User GetByUserName(string userName);
-        IResult UpdatePassword(Guid userId, byte[] passwordHash, byte[] passwordSalt);
-        UserForViewDTO GetByUserNameForView(string userName);
-        IResult ChangePassword(PasswordForChangeDTO passwordForChangeDTO);
+        Task<IResult> UpdateAccountLockDownAsync(Guid id, LockdownForAccountDTO lockdownForAccountDTO);
+        Task<User> GetByUserNameAsync(string userName);
+        Task<IResult> UpdatePasswordAsync(Guid userId, byte[] passwordHash, byte[] passwordSalt);
+        Task<UserForViewDTO> GetByUserNameForViewAsync(string userName);
+        Task<IResult> ChangePasswordAsync(PasswordForChangeDTO passwordForChangeDTO);
     }
 }

@@ -26,19 +26,13 @@ namespace Business.Concrete
         private static IResult ValidatePassword(User user, string oldPassword, string newPassword, string newPasswordAgain)
         {
             if (newPassword != newPasswordAgain)
-            {
                 return new ErrorResult(Messages.PasswordMatch);
-            }
 
             if (user == null)
-            {
                 return new ErrorResult(Messages.UserNotFound);
-            }
 
             if (!HashingHelper.VerifyPasswordHash(oldPassword, user.PasswordHash, user.PasswordSalt))
-            {
                 return new ErrorResult(Messages.PasswordDoesNotMatch);
-            }
 
             var minimumPasswordLength = 8; //Parametreden alınabilir.
             if (newPassword.Length < minimumPasswordLength)
@@ -48,40 +42,36 @@ namespace Business.Concrete
         }
         #endregion
 
-        public User Get(Guid id)
+        public async Task<User> GetAsync(Guid id)
         {
-            return _userDal.Get(f => f.Id == id && f.IsActive && !f.IsDeleted);
+            return await _userDal.GetAsync(f => f.Id == id && f.IsActive);
         }
 
-        public IResult UpdateAccountLockDown(Guid id, LockdownForAccountDTO lockdownForAccountDTO)
+        public async Task<IResult> UpdateAccountLockDownAsync(Guid id, LockdownForAccountDTO lockdownForAccountDTO)
         {
-            var user = _userDal.Get(f => f.Id == id && f.IsActive && !f.IsDeleted);
+            var user = await _userDal.GetAsync(f => f.Id == id && f.IsActive);
             if (user == null)
-            {
                 return new ErrorResult(Messages.UserNotFound);
-            }
 
             user.AccessFailedCount = lockdownForAccountDTO.AccessFailedCount;
             user.LockoutEnabled = lockdownForAccountDTO.LockoutEnabled;
             user.LockoutEndDateUtc = lockdownForAccountDTO.LockoutEndDateUtc;
 
-            _userDal.Update(user);
+            await _userDal.UpdateAsync(user);
 
             return new SuccessResult();
         }
 
-        public User GetByUserName(string userName)
+        public async Task<User> GetByUserNameAsync(string userName)
         {
-            return _userDal.Get(f => (f.UserName == userName) && f.IsActive && !f.IsDeleted);
+            return await _userDal.GetAsync(f => (f.UserName == userName) && f.IsActive);
         }
 
-        public IResult UpdatePassword(Guid userId, byte[] passwordHash, byte[] passwordSalt)
+        public async Task<IResult> UpdatePasswordAsync(Guid userId, byte[] passwordHash, byte[] passwordSalt)
         {
-            var userToUpdate = _userDal.Get(g => g.Id == userId);
+            var userToUpdate = await _userDal.GetAsync(g => g.Id == userId);
             if (userToUpdate.IsNull())
-            {
                 return new ErrorResult(Messages.UserNotFound);
-            }
 
             userToUpdate.PasswordHash = passwordHash;
             userToUpdate.PasswordSalt = passwordSalt;
@@ -90,20 +80,20 @@ namespace Business.Concrete
             userToUpdate.ModifiedBy = UserId;
             userToUpdate.ModifiedOn = DateTime.Now;
 
-            _userDal.Update(userToUpdate);
+            await _userDal.UpdateAsync(userToUpdate);
 
             return new SuccessResult();
         }
 
-        public UserForViewDTO GetByUserNameForView(string userName)
+        public async Task<UserForViewDTO> GetByUserNameForViewAsync(string userName)
         {
-            return _userDal.GetByUserName(userName);
+            return await _userDal.GetByUserNameAsync(userName);
         }
 
         [ValidationAspect(typeof(PasswordForChangeValidator), Priority = 1)]
-        public IResult ChangePassword(PasswordForChangeDTO passwordForChangeDTO)
+        public async Task<IResult> ChangePasswordAsync(PasswordForChangeDTO passwordForChangeDTO)
         {
-            var userToUpdate = Get(UserId);
+            var userToUpdate = await GetAsync(UserId);
             if (userToUpdate == null)
                 return new ErrorResult(Messages.UserNotFound);
 
@@ -120,7 +110,7 @@ namespace Business.Concrete
             userToUpdate.ModifiedBy = UserId;
             userToUpdate.ModifiedOn = DateTime.Now;
 
-            _userDal.Update(userToUpdate);
+            await _userDal.UpdateAsync(userToUpdate);
 
             return new SuccessResult(Messages.UserPasswordChanged);
         }

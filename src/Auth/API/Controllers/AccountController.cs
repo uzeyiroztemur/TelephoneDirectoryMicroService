@@ -17,10 +17,10 @@ namespace API.Controllers
         }
 
         [HttpPost("change-password")]
-        public IActionResult ChangePassword([FromBody] PasswordForChangeDTO model)
+        public async Task<IActionResult> ChangePassword([FromBody] PasswordForChangeDTO model)
         {
             _logger.Info("Change password");
-            var result = _authService.ChangePassword(model);
+            var result = await _authService.ChangePasswordAsync(model);
             _logger.HandleResult(model, "Change password");
 
             return ActionResultInstance<string>(result);

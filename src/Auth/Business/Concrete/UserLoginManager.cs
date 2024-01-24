@@ -22,7 +22,6 @@ namespace Business.Concrete
         private ClientInfo ParseUserAgent(string userAgent)
         {
             var uaParser = Parser.GetDefault();
-
             return uaParser.Parse(userAgent);
         }
 
@@ -32,18 +31,14 @@ namespace Business.Concrete
         }
         #endregion
 
-        public IResult Log(DetailForLoginDTO detailForLoginDTO)
+        public async Task<IResult> LogAsync(DetailForLoginDTO detailForLoginDTO)
         {
             if (detailForLoginDTO.UserAgent.IsEmpty())
-            {
                 return new ErrorResult(Messages.UserAgentNotFound);
-            }
 
             var clientInfo = ParseUserAgent(detailForLoginDTO.UserAgent);
             if (clientInfo.IsNull())
-            {
                 return new ErrorResult(Messages.UserAgentParseError);
-            }
 
             var entityToAdd = new UserLogin
             {
@@ -58,7 +53,7 @@ namespace Business.Concrete
                 UserAgentVersion = GetVersion(new[] { clientInfo.UA?.Major ?? "0", clientInfo.UA?.Minor ?? "0" }) ?? null,
             };
 
-            _userLoginDal.Add(entityToAdd);
+            await _userLoginDal.AddAsync(entityToAdd);
 
             return new SuccessResult();
         }

@@ -6,6 +6,6 @@ namespace Business.Abstract
 {
     public interface IUserDeviceService
     {
-        IDataResult<UserDevice> Upsert(DeviceForLoginDTO deviceForLoginDTO, string ipAddress, string browserName);
+        Task<IDataResult<UserDevice>> UpsertAsync(DeviceForLoginDTO deviceForLoginDTO, string ipAddress, string browserName);
     }
 }

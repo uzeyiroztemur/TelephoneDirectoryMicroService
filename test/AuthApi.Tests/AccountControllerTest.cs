@@ -12,7 +12,7 @@ namespace AuthApi.Tests
     public class AccountAuthControllerTest : BaseServiceTest<IAuthService>
     {
         [Fact]
-        public void ChangePassword_Returns_OkResult_When_ChangePassword_Succeeds()
+        public async Task ChangePassword_Returns_OkResult_When_ChangePassword_Succeeds()
         {
             var accountController = new AccountController(serviceMock.Object, loggerMock.Object);
 
@@ -24,10 +24,10 @@ namespace AuthApi.Tests
             };
 
             var successfulResult = new SuccessResult("Password changed successfully");
-            serviceMock.Setup(x => x.ChangePassword(It.IsAny<PasswordForChangeDTO>())).Returns(successfulResult);
+            serviceMock.Setup(x => x.ChangePasswordAsync(It.IsAny<PasswordForChangeDTO>())).ReturnsAsync(successfulResult);
 
             // Act
-            var result = accountController.ChangePassword(passwordForChangeDTO);
+            var result = await accountController.ChangePassword(passwordForChangeDTO);
 
             // Assert
             Assert.IsType<OkObjectResult>(result);
@@ -38,7 +38,7 @@ namespace AuthApi.Tests
         }
 
         [Fact]
-        public void ChangePassword_Returns_BadRequestResult_When_ChangePassword_Fails()
+        public async Task ChangePassword_Returns_BadRequestResult_When_ChangePassword_Fails()
         {
             var accountController = new AccountController(serviceMock.Object, loggerMock.Object);
 
@@ -50,10 +50,10 @@ namespace AuthApi.Tests
             };
 
             var errorResult = new ErrorResult("Failed to change password");
-            serviceMock.Setup(x => x.ChangePassword(It.IsAny<PasswordForChangeDTO>())).Returns(errorResult);
+            serviceMock.Setup(x => x.ChangePasswordAsync(It.IsAny<PasswordForChangeDTO>())).ReturnsAsync(errorResult);
 
             // Act
-            var result = accountController.ChangePassword(passwordForChangeDTO);
+            var result = await accountController.ChangePassword(passwordForChangeDTO);
 
             // Assert
             Assert.IsType<BadRequestObjectResult>(result);
