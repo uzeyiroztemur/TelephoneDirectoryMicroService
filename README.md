@@ -9,6 +9,12 @@ Detaylı bilgilere aşağıdaki adres yolundan belirtilen pdf dosyasından ulaş
 asset/Assessment.pdf
 ```
 
+<h3><b>Çalışma Mimarisi</b></h2>
+
+<p align="center">
+  <img src="./asset/diyagram.jpg" alt="Rapor Oluşturma Mimarisi" width="738">
+</p>
+
 <h3><b>Telefon Rehberi Projesinde Kullanılan Teknolojiler</b></h2>
 <ul>
 	<li>.NET Core 6</li>
@@ -21,6 +27,7 @@ asset/Assessment.pdf
 	<li>Swagger</li>
 	<li>Health Check</li>
 	<li>Logging</li>
+	<li>Translations</li>
 	<li>xUnit</li>
 	<li>Moq</li>
 	<li>Coverlet</li>
@@ -80,23 +87,9 @@ src/Gateway/API/appsettings.json
 
 <br>
 
-2.) Aşağıda belirtilen pathler için migrationlarının çalıştırılması sağlanacaktır. 
-
-```
-src/Auth/DataAccess
-src/Contact/DataAccess
-src/Report/DataAccess
-```
-
-```
-update-database
-```
+2.) Bu işlemler yapıldıktan sonra aşağıdaki servisler çalıştırılarak tüm süreçler gateway api servisi üzerinden yapılabilir.
 
 <br>
-
-3.) Bu işlemler yapıldıktan sonra aşağıdaki servisler çalıştırılarak tüm süreçler gateway api servisi üzerinden yapılabilir.
-
-<br><br>
 
 ```
 src/Auth/API
@@ -107,7 +100,7 @@ src/Gateway/API
 
 <br>
 
-Token Alma 
+3.) Token Alma Bilgileri 
 
 ```
 {
@@ -130,17 +123,7 @@ test/TelephoneDirectory.postman_environment.json
 <br>
 
 
-5.) Projenin çalışma mimarisi için aşağıdaki görsele bakabilirsiniz.
-
-```
-asset/diyagram.jpg
-```
-
-
-<br>
-
-
-6.) Docker ile çalıştırmak için aşağıdaki komutları kullanabilirsiniz.
+5.) Docker ile çalıştırmak için aşağıdaki komutları kullanabilirsiniz.
 
 ```
 docker-compose build

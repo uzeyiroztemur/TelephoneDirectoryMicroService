@@ -5,8 +5,8 @@ namespace Business.Abstract
 {
     public interface IPersonContactInfoService
     {
-        IResult Add(Guid personId, PersonContactInfoForUpsertDTO model);
-        IResult Update(Guid personId, Guid id, PersonContactInfoForUpsertDTO model);
-        IResult Delete(Guid personId, Guid id);
+        Task<IResult> AddAsync(Guid personId, PersonContactInfoForUpsertDTO model);
+        Task<IResult> UpdateAsync(Guid personId, Guid id, PersonContactInfoForUpsertDTO model);
+        Task<IResult> DeleteAsync(Guid personId, Guid id);
     }
 }

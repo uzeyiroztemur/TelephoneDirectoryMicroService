@@ -8,8 +8,8 @@ namespace DataAccess.Abstract
 {
     public interface IPersonDal : IEntityRepository<Person>
     {
-        IDataResult<IList<PersonForViewDTO>> List(Filter filter);
-        PersonForPreviewDTO Get(Guid id);
-        Task<IList<PersonReportForViewDTO>> Report();
+        Task<IDataResult<IList<PersonForViewDTO>>> ListAsync(Filter filter);
+        Task<PersonForPreviewDTO> GetAsync(Guid id);
+        Task<IList<PersonReportForViewDTO>> ReportAsync();
     }
 }

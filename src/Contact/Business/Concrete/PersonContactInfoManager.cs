@@ -23,9 +23,9 @@ namespace Business.Concrete
         }
 
         #region Business Rules
-        private IResult ValidatePersonContactInfo(Guid personId, Guid? id, PersonContactInfoForUpsertDTO personContactInfo)
+        private async Task<IResult> ValidatePersonContactInfo(Guid personId, Guid? id, PersonContactInfoForUpsertDTO personContactInfo)
         {
-            if (_personContactInfoDal.Get(c => !c.IsDeleted && c.Id != id && c.PersonId == personId && c.InfoType == personContactInfo.InfoType && c.InfoValue == personContactInfo.InfoValue) != null)
+            if (await _personContactInfoDal.GetAsync(c => c.Id != id && c.PersonId == personId && c.InfoType == personContactInfo.InfoType && c.InfoValue == personContactInfo.InfoValue) != null)
                 return new ErrorResult(Messages.PersonContactInfoHasBeenUsed);
 
             return new SuccessResult();
@@ -33,47 +33,45 @@ namespace Business.Concrete
         #endregion
 
         [ValidationAspect(typeof(PersonContactInfoForUpsertValidator), Priority = 1)]
-        public IResult Add(Guid personId, PersonContactInfoForUpsertDTO model)
+        public async Task<IResult> AddAsync(Guid personId, PersonContactInfoForUpsertDTO model)
         {
-            var result = BusinessRules.Run(ValidatePersonContactInfo(personId, null, model));
+            var result = BusinessRules.Run(await ValidatePersonContactInfo(personId, null, model));
             if (result != null)
                 return new ErrorResult(result.Message);
 
             var entityToAdd = _mapper.Map<PersonContactInfo>(model);
             entityToAdd.PersonId = personId;
-            _personContactInfoDal.Add(entityToAdd);
+
+            await _personContactInfoDal.AddAsync(entityToAdd);
 
             return new SuccessResult();
         }
 
         [ValidationAspect(typeof(PersonContactInfoForUpsertValidator), Priority = 1)]
-        public IResult Update(Guid personId, Guid id, PersonContactInfoForUpsertDTO model)
+        public async Task<IResult> UpdateAsync(Guid personId, Guid id, PersonContactInfoForUpsertDTO model)
         {
-            var entity = _personContactInfoDal.Get(f => f.PersonId == personId && f.Id == id && !f.IsDeleted);
+            var entity = await _personContactInfoDal.GetAsync(f => f.PersonId == personId && f.Id == id);
             if (entity == null)
                 return new ErrorResult(Messages.RecordNotFound);
 
-            var result = BusinessRules.Run(ValidatePersonContactInfo(personId, id, model));
+            var result = BusinessRules.Run(await ValidatePersonContactInfo(personId, id, model));
             if (result != null)
                 return new ErrorResult(result.Message);
 
             entity = _mapper.Map(model, entity);
-            _personContactInfoDal.Update(entity);
+
+            await _personContactInfoDal.UpdateAsync(entity);
 
             return new SuccessResult();
         }
 
-        public IResult Delete(Guid personId, Guid id)
+        public async Task<IResult> DeleteAsync(Guid personId, Guid id)
         {
-            var entity = _personContactInfoDal.Get(f => f.PersonId == personId && f.Id == id && !f.IsDeleted);
+            var entity = await _personContactInfoDal.GetAsync(f => f.PersonId == personId && f.Id == id);
             if (entity == null)
                 return new ErrorResult(Messages.RecordNotFound);
 
-            entity.IsDeleted = true;
-            entity.DeletedOn = DateTime.UtcNow;
-            entity.DeletedBy = UserId;
-
-            _personContactInfoDal.Update(entity);
+            await _personContactInfoDal.DeleteAsync(entity);
 
             return new SuccessResult();
         }

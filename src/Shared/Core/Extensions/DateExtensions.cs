@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using System.Globalization;
 
 namespace Core.Extensions
 {
@@ -179,6 +180,17 @@ namespace Core.Extensions
             DateTime dateTime = theDate.Date;
             dateTime = dateTime.AddDays(1.0);
             return dateTime.AddTicks(-1L);
+        }
+    }
+
+    public class UtcDateTimeConverter : ValueConverter<DateTime, DateTime>
+    {
+        public UtcDateTimeConverter(ConverterMappingHints mappingHints = null)
+            : base(
+                v => v.ToUniversalTime(),
+                v => DateTime.SpecifyKind(v, DateTimeKind.Utc),
+                mappingHints)
+        {
         }
     }
 }

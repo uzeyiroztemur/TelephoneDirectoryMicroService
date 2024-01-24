@@ -14,7 +14,7 @@ namespace ContactApi.Tests
     public class PersonControllerTest : BaseServiceTest<IPersonService>
     {
         [Fact]
-        public void List_Returns_OkResult_When_PersonList_Successful()
+        public async Task List_Returns_OkResult_When_PersonList_Successful()
         {
             var controller = new PersonsController(serviceMock.Object, loggerMock.Object);
 
@@ -37,10 +37,10 @@ namespace ContactApi.Tests
                 Message = null
             };
 
-            serviceMock.Setup(x => x.List(options)).Returns(successfulResult);
+            serviceMock.Setup(x => x.ListAsync(options)).ReturnsAsync(successfulResult);
 
             // Act
-            var result = controller.List(options);
+            var result = await controller.List(options);
 
             // Assert
             Assert.IsType<OkObjectResult>(result);
@@ -51,17 +51,17 @@ namespace ContactApi.Tests
         }
 
         [Fact]
-        public void List_Returns_BadRequestResult_When_PersonList_Fails()
+        public async Task List_Returns_BadRequestResult_When_PersonList_Fails()
         {
             var controller = new PersonsController(serviceMock.Object, loggerMock.Object);
 
             var options = new DataTableOptions { };
 
             var errorResult = new ErrorDataResult<IList<PersonForViewDTO>>();
-            serviceMock.Setup(x => x.List(options)).Returns(errorResult);
+            serviceMock.Setup(x => x.ListAsync(options)).ReturnsAsync(errorResult);
 
             // Act
-            var result = controller.List(options);
+            var result = await controller.List(options);
 
             // Assert
             Assert.IsType<BadRequestObjectResult>(result);
@@ -72,7 +72,7 @@ namespace ContactApi.Tests
         }
 
         [Fact]
-        public void Get_Returns_OkResult_When_PersonFound()
+        public async Task Get_Returns_OkResult_When_PersonFound()
         {
             var controller = new PersonsController(serviceMock.Object, loggerMock.Object);
 
@@ -96,10 +96,10 @@ namespace ContactApi.Tests
                 Message = null
             };
 
-            serviceMock.Setup(x => x.Get(personId)).Returns(successfulResult);
+            serviceMock.Setup(x => x.GetAsync(personId)).ReturnsAsync(successfulResult);
 
             // Act
-            var result = controller.Get(personId);
+            var result = await controller.Get(personId);
 
             // Assert
             Assert.IsType<OkObjectResult>(result);
@@ -110,7 +110,7 @@ namespace ContactApi.Tests
         }
 
         [Fact]
-        public void Get_Returns_BadRequestResult_When_PersonNotFound()
+        public async Task Get_Returns_BadRequestResult_When_PersonNotFound()
         {
             var controller = new PersonsController(serviceMock.Object, loggerMock.Object);
 
@@ -119,10 +119,10 @@ namespace ContactApi.Tests
             var errorResult = new ErrorDataResult<PersonForPreviewDTO>("Person not found");
 
             // Setup mock service to return the error result when called with the expected model
-            serviceMock.Setup(x => x.Get(personId)).Returns(errorResult);
+            serviceMock.Setup(x => x.GetAsync(personId)).ReturnsAsync(errorResult);
 
             // Act
-            var result = controller.Get(personId);
+            var result = await controller.Get(personId);
 
             // Assert
             Assert.IsType<BadRequestObjectResult>(result);
@@ -133,7 +133,7 @@ namespace ContactApi.Tests
         }
 
         [Fact]
-        public void Add_Returns_OkResult_When_PersonAddedSuccessfully()
+        public async Task Add_Returns_OkResult_When_PersonAddedSuccessfully()
         {
             var controller = new PersonsController(serviceMock.Object, loggerMock.Object);
 
@@ -145,13 +145,13 @@ namespace ContactApi.Tests
                 IsActive = true,
             };
 
-            var successfulResult = new SuccessDataResult<string>("Person added successfully");
+            var successfulResult = new SuccessDataResult<Guid?>("Person added successfully");
 
             // Setup mock service to return the expected result when called with the expected model
-            serviceMock.Setup(x => x.Add(personForUpsertDTO)).Returns(successfulResult);
+            serviceMock.Setup(x => x.AddAsync(personForUpsertDTO)).ReturnsAsync(successfulResult);
 
             // Act
-            var result = controller.Add(personForUpsertDTO);
+            var result = await controller.Add(personForUpsertDTO);
 
             // Assert
             Assert.IsType<OkObjectResult>(result);
@@ -162,7 +162,7 @@ namespace ContactApi.Tests
         }
 
         [Fact]
-        public void Add_Returns_BadRequestResult_When_PersonAddFails()
+        public async Task Add_Returns_BadRequestResult_When_PersonAddFails()
         {
             var controller = new PersonsController(serviceMock.Object, loggerMock.Object);
 
@@ -174,13 +174,13 @@ namespace ContactApi.Tests
                 IsActive = true,
             };
 
-            var errorResult = new ErrorDataResult<string>("Person add failed");
+            var errorResult = new ErrorDataResult<Guid?>("Person add failed");
 
             // Setup mock service to return the error result when called with the expected model
-            serviceMock.Setup(x => x.Add(personForUpsertDTO)).Returns(errorResult);
+            serviceMock.Setup(x => x.AddAsync(personForUpsertDTO)).ReturnsAsync(errorResult);
 
             // Act
-            var result = controller.Add(personForUpsertDTO);
+            var result = await controller.Add(personForUpsertDTO);
 
             // Assert
             Assert.IsType<BadRequestObjectResult>(result);
@@ -191,7 +191,7 @@ namespace ContactApi.Tests
         }
 
         [Fact]
-        public void Edit_Returns_OkResult_When_PersonUpdatedSuccessfully()
+        public async Task Edit_Returns_OkResult_When_PersonUpdatedSuccessfully()
         {
             var controller = new PersonsController(serviceMock.Object, loggerMock.Object);
 
@@ -207,10 +207,10 @@ namespace ContactApi.Tests
             var successfulResult = new SuccessDataResult<string>("Person updated successfully");
 
             // Setup mock service to return the expected result when called with the expected parameters
-            serviceMock.Setup(x => x.Update(personId, personForUpsertDTO)).Returns(successfulResult);
+            serviceMock.Setup(x => x.UpdateAsync(personId, personForUpsertDTO)).ReturnsAsync(successfulResult);
 
             // Act
-            var result = controller.Edit(personId, personForUpsertDTO);
+            var result = await controller.Edit(personId, personForUpsertDTO);
 
             // Assert
             Assert.IsType<OkObjectResult>(result);
@@ -221,7 +221,7 @@ namespace ContactApi.Tests
         }
 
         [Fact]
-        public void Edit_Returns_BadRequestResult_When_PersonUpdateFails()
+        public async Task Edit_Returns_BadRequestResult_When_PersonUpdateFails()
         {
             var controller = new PersonsController(serviceMock.Object, loggerMock.Object);
 
@@ -237,10 +237,10 @@ namespace ContactApi.Tests
             var errorResult = new ErrorDataResult<string>("Person update failed");
 
             // Setup mock service to return the error result when called with the expected parameters
-            serviceMock.Setup(x => x.Update(personId, personForUpsertDTO)).Returns(errorResult);
+            serviceMock.Setup(x => x.UpdateAsync(personId, personForUpsertDTO)).ReturnsAsync(errorResult);
 
             // Act
-            var result = controller.Edit(personId, personForUpsertDTO);
+            var result = await controller.Edit(personId, personForUpsertDTO);
 
             // Assert
             Assert.IsType<BadRequestObjectResult>(result);
@@ -251,7 +251,7 @@ namespace ContactApi.Tests
         }
 
         [Fact]
-        public void Delete_Returns_OkResult_When_PersonDeletedSuccessfully()
+        public async Task Delete_Returns_OkResult_When_PersonDeletedSuccessfully()
         {
             var controller = new PersonsController(serviceMock.Object, loggerMock.Object);
 
@@ -260,10 +260,10 @@ namespace ContactApi.Tests
             var successfulResult = new SuccessDataResult<string>("Person deleted successfully");
 
             // Setup mock service to return the expected result when called with the expected parameter
-            serviceMock.Setup(x => x.Delete(personId)).Returns(successfulResult);
+            serviceMock.Setup(x => x.DeleteAsync(personId)).ReturnsAsync(successfulResult);
 
             // Act
-            var result = controller.Delete(personId);
+            var result = await controller.Delete(personId);
 
             // Assert
             Assert.IsType<OkObjectResult>(result);
@@ -274,7 +274,7 @@ namespace ContactApi.Tests
         }
 
         [Fact]
-        public void Delete_Returns_BadRequestResult_When_PersonDeleteFails()
+        public async Task Delete_Returns_BadRequestResult_When_PersonDeleteFails()
         {
             var controller = new PersonsController(serviceMock.Object, loggerMock.Object);
 
@@ -283,10 +283,10 @@ namespace ContactApi.Tests
             var errorResult = new ErrorDataResult<string>("Person delete failed");
 
             // Setup mock service to return the error result when called with the expected parameter
-            serviceMock.Setup(x => x.Delete(personId)).Returns(errorResult);
+            serviceMock.Setup(x => x.DeleteAsync(personId)).ReturnsAsync(errorResult);
 
             // Act
-            var result = controller.Delete(personId);
+            var result = await controller.Delete(personId);
 
             // Assert
             Assert.IsType<BadRequestObjectResult>(result);
@@ -318,7 +318,7 @@ namespace ContactApi.Tests
             };
 
             // Setup mock service to return the expected result
-            serviceMock.Setup(x => x.Report()).ReturnsAsync(successfulResult);
+            serviceMock.Setup(x => x.ReportAsync()).ReturnsAsync(successfulResult);
 
             // Act
             var result = await controller.Report();
@@ -339,7 +339,7 @@ namespace ContactApi.Tests
             var errorResult = new ErrorDataResult<IList<PersonReportForViewDTO>>();
 
             // Setup mock service to return the error result
-            serviceMock.Setup(x => x.Report()).ReturnsAsync(errorResult);
+            serviceMock.Setup(x => x.ReportAsync()).ReturnsAsync(errorResult);
 
             // Act
             var result = await controller.Report();

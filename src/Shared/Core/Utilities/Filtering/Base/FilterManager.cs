@@ -1,6 +1,7 @@
 ﻿using Core.Entities.DTOs;
 using Core.Extensions;
 using Core.Utilities.Filtering.Parameters;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -32,45 +33,51 @@ namespace Core.Utilities.Filtering
 
         private static IQueryable<T> ToPagedList<T>(this IQueryable<T> query, Criter prms)
         {
-            IQueryable<T> source1 = query;
-            int? nullable;
-            int count1;
-            if (!prms.Skip.HasValue)
-            {
-                count1 = 0;
-            }
-            else
-            {
-                nullable = prms.Skip;
-                count1 = nullable.Value;
-            }
-            IQueryable<T> source2 = Queryable.Skip<T>(source1, count1);
-            nullable = prms.Take;
-            int count2;
-            if (!nullable.HasValue)
-            {
-                count2 = 10;
-            }
-            else
-            {
-                nullable = prms.Take;
-                count2 = nullable.Value;
-            }
-            return Queryable.Take<T>(source2, count2);
+            int skipCount = prms.Skip ?? 0;
+            int takeCount = prms.Take ?? 10;
+
+            return query.Skip(skipCount).Take(takeCount);
         }
+
+        private static async Task<IQueryable<T>> ToPagedListAsync<T>(this IQueryable<T> query, Criter prms)
+        {
+            int skipCount = prms.Skip ?? 0;
+            int takeCount = prms.Take ?? 10;
+
+            IQueryable<T> pagedQuery = query.Skip(skipCount).Take(takeCount);
+
+            return await Task.FromResult(pagedQuery);
+        }
+
 
         public static IDataResult<IList<T>> ToFilteredList<T>(this IQueryable<T> query, Criter prms)
         {
             try
             {
-                IQueryable<T> filter = query.GetFilter<T>(prms);
-                int count = Queryable.Count<T>(query);
+                IQueryable<T> filter = query.GetFilter(prms);
+                int count = Queryable.Count(query);
                 Criter prms1 = prms;
-                return (IDataResult<IList<T>>)new SuccessDataResult<IList<T>>((IList<T>)filter.ToPagedList<T>(prms1).ToList<T>(), count);
+                return new SuccessDataResult<IList<T>>(filter.ToPagedList(prms1).ToList(), count);
             }
             catch (Exception ex)
             {
-                return (IDataResult<IList<T>>)new ErrorDataResult<IList<T>>(ex.Message);
+                return new ErrorDataResult<IList<T>>(ex.Message);
+            }
+        }
+
+        public static async Task<IDataResult<IList<T>>> ToFilteredListAsync<T>(this IQueryable<T> query, Criter prms)
+        {
+            try
+            {
+                IQueryable<T> filter = query.GetFilter<T>(prms);
+                int count = Queryable.Count(query);
+                Criter prms1 = prms;
+                var pagedList = await filter.ToPagedListAsync<T>(prms1);
+                return new SuccessDataResult<IList<T>>(pagedList.ToList(), count);
+            }
+            catch (Exception ex)
+            {
+                return new ErrorDataResult<IList<T>>(ex.Message);
             }
         }
 
@@ -79,13 +86,27 @@ namespace Core.Utilities.Filtering
             try
             {
                 List<T> list = query.ToList<T>();
-                return (IDataResult<IList<T>>)new SuccessDataResult<IList<T>>((IList<T>)list, list.Count);
+                return new SuccessDataResult<IList<T>>(list, list.Count);
             }
             catch (Exception ex)
             {
-                return (IDataResult<IList<T>>)new ErrorDataResult<IList<T>>(ex.Message);
+                return new ErrorDataResult<IList<T>>(ex.Message);
             }
         }
+
+        public static async Task<IDataResult<IList<T>>> ToFilteredListAsync<T>(this IQueryable<T> query)
+        {
+            try
+            {
+                List<T> list = await query.ToListAsync();
+                return new SuccessDataResult<IList<T>>(list, list.Count);
+            }
+            catch (Exception ex)
+            {
+                return new ErrorDataResult<IList<T>>(ex.Message);
+            }
+        }
+
 
         public static IDataResult<T> GetFirst<T>(this IQueryable<T> query)
         {

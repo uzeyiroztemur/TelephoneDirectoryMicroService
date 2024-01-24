@@ -7,12 +7,12 @@ namespace Business.Abstract
 {
     public interface IPersonService
     {
-        IDataResult<IList<PersonForViewDTO>> List(DataTableOptions options);
-        IDataResult<PersonForPreviewDTO> Get(Guid id);
-        IResult Add(PersonForUpsertDTO model);
-        IResult Update(Guid id, PersonForUpsertDTO model);
-        IResult Delete(Guid id);
+        Task<IDataResult<IList<PersonForViewDTO>>> ListAsync(DataTableOptions options);
+        Task<IDataResult<PersonForPreviewDTO>> GetAsync(Guid id);
+        Task<IDataResult<Guid?>> AddAsync(PersonForUpsertDTO model);
+        Task<IResult> UpdateAsync(Guid id, PersonForUpsertDTO model);
+        Task<IResult> DeleteAsync(Guid id);
 
-        Task<IDataResult<IList<PersonReportForViewDTO>>> Report();
+        Task<IDataResult<IList<PersonReportForViewDTO>>> ReportAsync();
     }
 }
