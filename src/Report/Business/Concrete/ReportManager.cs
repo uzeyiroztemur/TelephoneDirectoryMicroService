@@ -5,7 +5,6 @@ using Business.MessageContracts;
 using Business.MessageContracts.Commands;
 using Core.Aspects.Autofac.Caching;
 using Core.Aspects.Autofac.Transaction;
-using Core.CrossCuttingConcerns.Caching;
 using Core.Entities.DTOs;
 using Core.Utilities.Business;
 using Core.Utilities.Filtering;
@@ -24,15 +23,13 @@ namespace Business.Concrete
         private readonly IReportDal _reportDal;
         private readonly IReportDetailDal _reportDetailDal;
         private readonly ISendEndpointProvider _sendEndpointProvider;
-        private readonly ICacheManager _cacheManager;
         private readonly IMapper _mapper;
 
-        public ReportManager(IReportDal reportDal, IReportDetailDal reportDetailDal, ISendEndpointProvider sendEndpointProvider, ICacheManager cacheManager, IMapper mapper)
+        public ReportManager(IReportDal reportDal, IReportDetailDal reportDetailDal, ISendEndpointProvider sendEndpointProvider, IMapper mapper)
         {
             _reportDal = reportDal;
             _reportDetailDal = reportDetailDal;
             _sendEndpointProvider = sendEndpointProvider;
-            _cacheManager = cacheManager;
             _mapper = mapper;
         }
 
@@ -43,22 +40,22 @@ namespace Business.Concrete
         }
         #endregion
 
-        public IDataResult<IList<ReportForViewDTO>> List(DataTableOptions options)
+        public async Task<IDataResult<IList<ReportForViewDTO>>> ListAsync(DataTableOptions options)
         {
-            return _reportDal.List(new Filter(options));
+            return await _reportDal.ListAsync(new Filter(options));
         }
 
         [CacheAspect()]
-        public IDataResult<ReportForPreviewDTO> Get(Guid id)
+        public async Task<IDataResult<ReportForPreviewDTO>> GetAsync(Guid id)
         {
-            var dataItem = _reportDal.Get(id);
+            var dataItem = await _reportDal.GetAsync(id);
             if (dataItem != null)
                 return new SuccessDataResult<ReportForPreviewDTO>(dataItem);
 
             return new ErrorDataResult<ReportForPreviewDTO>();
         }
 
-        public async Task<IResult> Create()
+        public async Task<IResult> CreateAsync()
         {
             var result = BusinessRules.Run(ValidateReport(null));
             if (result != null)
@@ -69,9 +66,9 @@ namespace Business.Concrete
                 Status = ReportStatus.Preparing,
             };
 
-            _reportDal.Add(entityToAdd);
+            await _reportDal.AddAsync(entityToAdd);
 
-            //SendQuee
+            //Send Quee
             var sendEndpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri($"queue:{RabbitMQConstants.CreateReportQueueName}"));
             await sendEndpoint.Send<ICreateReportCommand>(new
             {
@@ -82,9 +79,9 @@ namespace Business.Concrete
         }
 
         [TransactionScopeAspect()]
-        public IResult CreateDetail(Guid reportId, IList<ReportDetailForUpsertDTO> data)
+        public async Task<IResult> CreateDetailAsync(Guid reportId, IList<ReportDetailForUpsertDTO> data)
         {
-            var reportEntity = _reportDal.Get(f => f.Id == reportId);
+            var reportEntity = await _reportDal.GetAsync(f => f.Id == reportId);
             if (reportEntity == null)
                 return new ErrorResult(Messages.RecordNotFound);
 
@@ -93,11 +90,13 @@ namespace Business.Concrete
                 var detailToAdd = _mapper.Map<ReportDetail>(item);
                 detailToAdd.ReportId = reportId;
                 detailToAdd.CreatedBy = reportEntity.CreatedBy;
-                _reportDetailDal.Add(detailToAdd);
+
+                await _reportDetailDal.AddAsync(detailToAdd);
             }
 
             reportEntity.Status = ReportStatus.Completed;
-            _reportDal.Update(reportEntity);
+
+            await _reportDal.UpdateAsync(reportEntity);
 
             return new SuccessResult();
         }

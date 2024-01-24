@@ -17,20 +17,20 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public IActionResult List([FromQuery] DataTableOptions options)
+        public async Task<IActionResult> List([FromQuery] DataTableOptions options)
         {
             _logger.Info("Get reports");
-            var result = _reportService.List(options);
+            var result = await _reportService.ListAsync(options);
             _logger.HandleResult(result, "Get reports");
 
             return ActionResultInstance(result);
         }
 
         [HttpGet("view/{id}")]
-        public IActionResult Get(Guid id)
+        public async Task<IActionResult> Get(Guid id)
         {
             _logger.Info($"Get report {id}");
-            var result = _reportService.Get(id);
+            var result = await _reportService.GetAsync(id);
             _logger.HandleResult(result, $"Get report {id}");
 
             return ActionResultInstance(result);
@@ -40,7 +40,7 @@ namespace API.Controllers
         public async Task<IActionResult> Create()
         {
             _logger.Info($"Creating report");
-            var result = await _reportService.Create();
+            var result = await _reportService.CreateAsync();
             _logger.HandleResult(result, $"Report created");
 
             return ActionResultInstance<string>(result);

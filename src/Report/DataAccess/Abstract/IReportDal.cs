@@ -8,7 +8,7 @@ namespace DataAccess.Abstract
 {
     public interface IReportDal : IEntityRepository<Report>
     {
-        IDataResult<IList<ReportForViewDTO>> List(Filter filter);
-        ReportForPreviewDTO Get(Guid id);
+        Task<IDataResult<IList<ReportForViewDTO>>> ListAsync(Filter filter);
+        Task<ReportForPreviewDTO> GetAsync(Guid id);
     }
 }

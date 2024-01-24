@@ -45,7 +45,7 @@ namespace Business.Consumers
                     var response = JsonConvert.DeserializeObject<DataResult<List<ReportDetailForUpsertDTO>>>(responseString);
                     if (response.Success)
                     {
-                        var createResponse = _reportService.CreateDetail(message.ReportId, response.Data);
+                        var createResponse = await _reportService.CreateDetailAsync(message.ReportId, response.Data);
                         if (!createResponse.Success)
                             throw new Exception(createResponse.Message);
 

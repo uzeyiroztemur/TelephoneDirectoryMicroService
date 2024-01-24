@@ -12,7 +12,7 @@ namespace DataAccess.Concrete
 {
     public class ReportDal : EfEntityRepositoryBase<Report, AppDbContext>, IReportDal
     {
-        public IDataResult<IList<ReportForViewDTO>> List(Filter filter)
+        public async Task<IDataResult<IList<ReportForViewDTO>>> ListAsync(Filter filter)
         {
             using var context = new AppDbContext();
 
@@ -27,10 +27,10 @@ namespace DataAccess.Concrete
             if (!string.IsNullOrEmpty(filter.Search))
                 query = query.Where(w => w.StatusName.ToLower().Contains(filter.Search.ToLower()));
 
-            return query.AsNoTracking().ToFilteredList(filter.GetCriter());
+            return await query.AsNoTracking().ToFilteredListAsync(filter.GetCriter());
         }
 
-        public ReportForPreviewDTO Get(Guid id)
+        public async Task<ReportForPreviewDTO> GetAsync(Guid id)
         {
             using var context = new AppDbContext();
 
@@ -51,7 +51,7 @@ namespace DataAccess.Concrete
                             }).ToList(),
                         };
 
-            return query.AsNoTracking().FirstOrDefault();
+            return await query.AsNoTracking().FirstOrDefaultAsync();
         }
     }
 }

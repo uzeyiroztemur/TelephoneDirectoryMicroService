@@ -7,9 +7,9 @@ namespace Business.Abstract
 {
     public interface IReportService
     {
-        IDataResult<IList<ReportForViewDTO>> List(DataTableOptions options);
-        IDataResult<ReportForPreviewDTO> Get(Guid id);
-        Task<IResult> Create();
-        IResult CreateDetail(Guid reportId, IList<ReportDetailForUpsertDTO> data);
+        Task<IDataResult<IList<ReportForViewDTO>>> ListAsync(DataTableOptions options);
+        Task<IDataResult<ReportForPreviewDTO>> GetAsync(Guid id);
+        Task<IResult> CreateAsync();
+        Task<IResult> CreateDetailAsync(Guid reportId, IList<ReportDetailForUpsertDTO> data);
     }
 }

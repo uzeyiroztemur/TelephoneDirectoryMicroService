@@ -13,7 +13,7 @@ namespace ReportApi.Tests
     public class ReportControllerTest : BaseServiceTest<IReportService>
     {
         [Fact]
-        public void List_Returns_OkResult_When_ReportList_Successful()
+        public async Task List_Returns_OkResult_When_ReportList_Successful()
         {
             var controller = new ReportsController(serviceMock.Object, loggerMock.Object);
 
@@ -35,10 +35,10 @@ namespace ReportApi.Tests
                 Message = null
             };
 
-            serviceMock.Setup(x => x.List(options)).Returns(successfulResult);
+            serviceMock.Setup(x => x.ListAsync(options)).ReturnsAsync(successfulResult);
 
             // Act
-            var result = controller.List(options);
+            var result = await controller.List(options);
 
             // Assert
             Assert.IsType<OkObjectResult>(result);
@@ -49,17 +49,17 @@ namespace ReportApi.Tests
         }
 
         [Fact]
-        public void List_Returns_BadRequestResult_When_ReportList_Fails()
+        public async Task List_Returns_BadRequestResult_When_ReportList_Fails()
         {
             var controller = new ReportsController(serviceMock.Object, loggerMock.Object);
 
             var options = new DataTableOptions { };
 
             var errorResult = new ErrorDataResult<IList<ReportForViewDTO>>();
-            serviceMock.Setup(x => x.List(options)).Returns(errorResult);
+            serviceMock.Setup(x => x.ListAsync(options)).ReturnsAsync(errorResult);
 
             // Act
-            var result = controller.List(options);
+            var result = await controller.List(options);
 
             // Assert
             Assert.IsType<BadRequestObjectResult>(result);
@@ -70,7 +70,7 @@ namespace ReportApi.Tests
         }
 
         [Fact]
-        public void Get_Returns_OkResult_When_ReportFound()
+        public async Task Get_Returns_OkResult_When_ReportFound()
         {
             var controller = new ReportsController(serviceMock.Object, loggerMock.Object);
 
@@ -100,10 +100,10 @@ namespace ReportApi.Tests
                 Message = null
             };
 
-            serviceMock.Setup(x => x.Get(reportId)).Returns(successfulResult);
+            serviceMock.Setup(x => x.GetAsync(reportId)).ReturnsAsync(successfulResult);
 
             // Act
-            var result = controller.Get(reportId);
+            var result = await controller.Get(reportId);
 
             // Assert
             Assert.IsType<OkObjectResult>(result);
@@ -114,7 +114,7 @@ namespace ReportApi.Tests
         }
 
         [Fact]
-        public void Get_Returns_BadRequestResult_When_ReportNotFound()
+        public async Task Get_Returns_BadRequestResult_When_ReportNotFound()
         {
             var controller = new ReportsController(serviceMock.Object, loggerMock.Object);
 
@@ -123,10 +123,10 @@ namespace ReportApi.Tests
             var errorResult = new ErrorDataResult<ReportForPreviewDTO>("Report not found");
 
             // Setup mock service to return the error result when called with the expected model
-            serviceMock.Setup(x => x.Get(reportId)).Returns(errorResult);
+            serviceMock.Setup(x => x.GetAsync(reportId)).ReturnsAsync(errorResult);
 
             // Act
-            var result = controller.Get(reportId);
+            var result = await controller.Get(reportId);
 
             // Assert
             Assert.IsType<BadRequestObjectResult>(result);
@@ -144,7 +144,7 @@ namespace ReportApi.Tests
             var successfulResult = new SuccessDataResult<string>("Report created successfully");
 
             // Setup mock service to return the expected result
-            serviceMock.Setup(x => x.Create()).ReturnsAsync(successfulResult);
+            serviceMock.Setup(x => x.CreateAsync()).ReturnsAsync(successfulResult);
 
             // Act
             var result = await controller.Create();
@@ -165,7 +165,7 @@ namespace ReportApi.Tests
             var errorResult = new ErrorDataResult<string>("Report creation failed");
 
             // Setup mock service to return the error result
-            serviceMock.Setup(x => x.Create()).ReturnsAsync(errorResult);
+            serviceMock.Setup(x => x.CreateAsync()).ReturnsAsync(errorResult);
 
             // Act
             var result = await controller.Create();
