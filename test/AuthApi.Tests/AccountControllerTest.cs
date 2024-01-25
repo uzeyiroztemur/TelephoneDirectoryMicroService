@@ -14,7 +14,7 @@ namespace AuthApi.Tests
         [Fact]
         public async Task ChangePassword_Returns_OkResult_When_ChangePassword_Succeeds()
         {
-            var accountController = new AccountController(serviceMock.Object, loggerMock.Object);
+            var accountController = new AccountController(serviceMock.Object);
 
             var passwordForChangeDTO = new PasswordForChangeDTO
             {
@@ -40,7 +40,7 @@ namespace AuthApi.Tests
         [Fact]
         public async Task ChangePassword_Returns_BadRequestResult_When_ChangePassword_Fails()
         {
-            var accountController = new AccountController(serviceMock.Object, loggerMock.Object);
+            var accountController = new AccountController(serviceMock.Object);
 
             var passwordForChangeDTO = new PasswordForChangeDTO
             {

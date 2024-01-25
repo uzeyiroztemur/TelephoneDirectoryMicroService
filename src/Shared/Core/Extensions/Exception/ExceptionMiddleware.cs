@@ -42,6 +42,7 @@ namespace Core.Extensions.Exception
                 StatusCode = httpContext.Response.StatusCode,
                 Message = message,
             };
+
             return httpContext.Response.WriteAsync(errorDetails.ToString());
         }
     }

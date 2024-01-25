@@ -16,7 +16,7 @@ namespace AuthApi.Tests
         [Fact]
         public async Task Login_Returns_BadRequest_When_Login_Fails()
         {
-            var authController = new AuthController(serviceMock.Object, loggerMock.Object);
+            var authController = new AuthController(serviceMock.Object);
 
             var userForLoginDTO = new UserForLoginDTO
             {
@@ -39,7 +39,7 @@ namespace AuthApi.Tests
         [Fact]
         public async Task Login_Returns_Token_When_Login_Succeeds()
         {
-            var authController = new AuthController(serviceMock.Object, loggerMock.Object);
+            var authController = new AuthController(serviceMock.Object);
 
             var userForLoginDTO = new UserForLoginDTO
             {

@@ -2,35 +2,33 @@
 using Entities.DTOs.Params;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Core.CrossCuttingConcerns.Logging;
+using Serilog;
 
 namespace API.Controllers
 {
     public class AuthController : BaseController
     {
         private readonly IAuthService _authService;
-        private readonly Core.CrossCuttingConcerns.Logging.ILogger _logger;
 
-        public AuthController(IAuthService authService, Core.CrossCuttingConcerns.Logging.ILogger logger)
+        public AuthController(IAuthService authService)
         {
             _authService = authService;
-            _logger = logger;
         }
 
         [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserForLoginDTO model)
         {
-            _logger.Info($"User login in {model.UserName}");
+            Log.Information($"User login in {model.UserName}");
             var userToLogin = await _authService.LoginAsync(model);
-            _logger.HandleResult(userToLogin, $"User signed in {model.UserName}");
+            Log.Information($"User signed in {model.UserName}");
 
             if (!userToLogin.Success)
                 return BadRequest(userToLogin);
 
             var result = await _authService.CreateAccessTokenAsync(userToLogin.Data);
 
-            _logger.HandleResult(result, $"Creating token {model.UserName}");
+            Log.Information($"Creating token {model.UserName}");
 
             if (result.Success)
                 userToLogin.Data.Token = result.Data;

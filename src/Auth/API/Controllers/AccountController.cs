@@ -1,27 +1,25 @@
 ﻿using Business.Abstract;
-using Core.CrossCuttingConcerns.Logging;
 using Entities.DTOs.Params;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace API.Controllers
 {
     public class AccountController : BaseController
     {
         private readonly IAuthService _authService;
-        private readonly Core.CrossCuttingConcerns.Logging.ILogger _logger;
 
-        public AccountController(IAuthService authService, Core.CrossCuttingConcerns.Logging.ILogger logger)
+        public AccountController(IAuthService authService)
         {
             _authService = authService;
-            _logger = logger;
         }
 
         [HttpPost("change-password")]
         public async Task<IActionResult> ChangePassword([FromBody] PasswordForChangeDTO model)
         {
-            _logger.Info("Change password");
+            Log.Information("Change password");
             var result = await _authService.ChangePasswordAsync(model);
-            _logger.HandleResult(model, "Change password");
+            Log.Information("Change password completed");
 
             return ActionResultInstance<string>(result);
         }
