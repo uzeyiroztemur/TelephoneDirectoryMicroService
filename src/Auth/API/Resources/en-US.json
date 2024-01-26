@@ -1,3 +1,22 @@
 {
-
+  "PasswordMatch": "Passwords do not match.",
+  "UserNotFound": "User not found.",
+  "PasswordDoesNotMatch": "Incorrect password entered.",
+  "PasswordDoesNotLength": "Your password is not long enough. It must be at least {0} characters.",
+  "UserPasswordChanged": "Your password has been changed.",
+  "PasswordInvalid": "Invalid username.",
+  "UserMustChangePassword": "Reset your password to log into your account.",
+  "UserAgentParseError": "An error occurred while parsing the user agent header.",
+  "UserDeviceNotRegistered": "Your device is not registered! Please contact the system administrator.",
+  "UserSuccessfulLogin": "Login successful.",
+  "UserAccessTokenCreated": "Access token successfully created.",
+  "PasswordUndefined": "Email or password is incorrect.",
+  "UserAccountLockeddown": "Your account is locked. You can try logging in again after {Minutes} minutes.",
+  "PasswordRequired": "Password cannot be empty.",
+  "PasswordLength": "Password must be between {MinLength} and {MaxLength} characters.",
+  "RecordNotFound": "Record not found.",
+  "UserAgentNotFound": "User agent header could not be obtained during login.",
+  "UserNameRequired": "Username cannot be empty.",
+  "UnauthorizedRequest": "You need to be logged in.",
+  "UserSuccessfullLogin": "Login successful."
 }

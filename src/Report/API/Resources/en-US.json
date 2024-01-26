@@ -1,3 +1,4 @@
 {
-
+  "UnauthorizedRequest": "You need to be logged in.",
+  "RecordNotFound": "Record not found."
 }

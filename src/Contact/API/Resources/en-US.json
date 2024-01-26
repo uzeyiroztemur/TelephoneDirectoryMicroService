@@ -1,3 +1,13 @@
 {
-
+  "UnauthorizedRequest": "You need to be logged in.",
+  "RecordNotFound": "Record not found.",
+  "FirstNameRequired": "First name cannot be empty.",
+  "FirstNameLength": "First name must be between {MinLength} and {MaxLength} characters.",
+  "LastNameRequired": "Last name cannot be empty.",
+  "LastNameLength": "Last name must be between {MinLength} and {MaxLength} characters.",
+  "CompanyLength": "Company must be between {MinLength} and {MaxLength} characters.",
+  "InfoValueRequired": "Contact information cannot be empty.",
+  "InfoValueLength": "Contact information must be between {MinLength} and {MaxLength} characters.",
+  "PersonContactInfoHasBeenUsed": "The entered contact information has already been defined.",
+  "PersonHasBeenUsed": "The entered person information has already been defined."
 }
