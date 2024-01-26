@@ -15,7 +15,7 @@ namespace ReportApi.Tests
         [Fact]
         public async Task List_Returns_OkResult_When_ReportList_Successful()
         {
-            var controller = new ReportsController(serviceMock.Object, loggerMock.Object);
+            var controller = new ReportsController(serviceMock.Object);
 
             var options = new DataTableOptions { };
 
@@ -51,7 +51,7 @@ namespace ReportApi.Tests
         [Fact]
         public async Task List_Returns_BadRequestResult_When_ReportList_Fails()
         {
-            var controller = new ReportsController(serviceMock.Object, loggerMock.Object);
+            var controller = new ReportsController(serviceMock.Object);
 
             var options = new DataTableOptions { };
 
@@ -72,7 +72,7 @@ namespace ReportApi.Tests
         [Fact]
         public async Task Get_Returns_OkResult_When_ReportFound()
         {
-            var controller = new ReportsController(serviceMock.Object, loggerMock.Object);
+            var controller = new ReportsController(serviceMock.Object);
 
             var reportId = Guid.NewGuid();
 
@@ -116,7 +116,7 @@ namespace ReportApi.Tests
         [Fact]
         public async Task Get_Returns_BadRequestResult_When_ReportNotFound()
         {
-            var controller = new ReportsController(serviceMock.Object, loggerMock.Object);
+            var controller = new ReportsController(serviceMock.Object);
 
             var reportId = Guid.NewGuid();
 
@@ -139,7 +139,7 @@ namespace ReportApi.Tests
         [Fact]
         public async Task Create_Returns_OkResult_When_ReportCreatedSuccessfully()
         {
-            var controller = new ReportsController(serviceMock.Object, loggerMock.Object);
+            var controller = new ReportsController(serviceMock.Object);
 
             var successfulResult = new SuccessDataResult<string>("Report created successfully");
 
@@ -160,7 +160,7 @@ namespace ReportApi.Tests
         [Fact]
         public async Task Create_Returns_BadRequestResult_When_ReportCreateFails()
         {
-            var controller = new ReportsController(serviceMock.Object, loggerMock.Object);
+            var controller = new ReportsController(serviceMock.Object);
 
             var errorResult = new ErrorDataResult<string>("Report creation failed");
 

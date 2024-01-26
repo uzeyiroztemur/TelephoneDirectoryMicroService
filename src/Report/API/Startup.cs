@@ -10,6 +10,7 @@ using Core.Utilities.IoC;
 using Core.Utilities.Security.Encryption;
 using Core.Utilities.Security.Jwt;
 using DataAccess.DataContext.Dapper.Helper;
+using Elastic.Apm.NetCoreAll;
 using HealthChecks.UI.Client;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -38,6 +39,15 @@ namespace API
             services.AddLocalization(opt =>
             {
                 opt.ResourcesPath = "Resources";
+            });
+
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                List<CultureInfo> supportedCultures = new() { new CultureInfo("tr-TR"), new CultureInfo("en-US") };
+                options.DefaultRequestCulture = new RequestCulture("tr-TR");
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+                options.SetDefaultCulture("tr-TR");
             });
 
             services.AddDistributedMemoryCache();
@@ -133,15 +143,6 @@ namespace API
             services.AddRouting(options => options.LowercaseUrls = true);
             services.AddAutoMapper(typeof(MapProfile));
             services.AddSingleton<ConnectionHelper>();
-
-            services.Configure<RequestLocalizationOptions>(options =>
-            {
-                List<CultureInfo> supportedCultures = new() { new CultureInfo("tr-TR"), new CultureInfo("en-US") };
-                options.DefaultRequestCulture = new RequestCulture("tr-TR");
-                options.SupportedCultures = supportedCultures;
-                options.SupportedUICultures = supportedCultures;
-                options.SetDefaultCulture("tr-TR");
-            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -178,6 +179,8 @@ namespace API
 
             var options = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
             app.UseRequestLocalization(options.Value);
+
+            app.UseAllElasticApm(Configuration);
         }
     }
 }

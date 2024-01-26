@@ -14,7 +14,7 @@ namespace ContactApi.Tests
         [Fact]
         public async Task Add_Returns_OkResult_When_PersonContactInfoAddedSuccessfully()
         {
-            var controller = new PersonContactInfosController(serviceMock.Object, loggerMock.Object);
+            var controller = new PersonContactInfosController(serviceMock.Object);
 
             var personId = Guid.NewGuid();
             var personContactInfoForUpsertDTO = new PersonContactInfoForUpsertDTO
@@ -43,7 +43,7 @@ namespace ContactApi.Tests
         [Fact]
         public async Task Add_Returns_BadRequestResult_When_PersonContactInfoAddFails()
         {
-            var controller = new PersonContactInfosController(serviceMock.Object, loggerMock.Object);
+            var controller = new PersonContactInfosController(serviceMock.Object);
 
             var personId = Guid.NewGuid();
             var personContactInfoForUpsertDTO = new PersonContactInfoForUpsertDTO
@@ -72,7 +72,7 @@ namespace ContactApi.Tests
         [Fact]
         public async Task Edit_Returns_OkResult_When_PersonContactInfoUpdatedSuccessfully()
         {
-            var controller = new PersonContactInfosController(serviceMock.Object, loggerMock.Object);
+            var controller = new PersonContactInfosController(serviceMock.Object);
 
             var personId = Guid.NewGuid();
             var personContactInfoId = Guid.NewGuid();
@@ -102,7 +102,7 @@ namespace ContactApi.Tests
         [Fact]
         public async Task Edit_Returns_BadRequestResult_When_PersonContactInfoUpdateFails()
         {
-            var controller = new PersonContactInfosController(serviceMock.Object, loggerMock.Object);
+            var controller = new PersonContactInfosController(serviceMock.Object);
 
             var personId = Guid.NewGuid();
             var personContactInfoId = Guid.NewGuid();
@@ -132,7 +132,7 @@ namespace ContactApi.Tests
         [Fact]
         public async Task Delete_Returns_OkResult_When_PersonContactInfoDeletedSuccessfully()
         {
-            var controller = new PersonContactInfosController(serviceMock.Object, loggerMock.Object);
+            var controller = new PersonContactInfosController(serviceMock.Object);
 
             var personId = Guid.NewGuid();
             var personContactInfoId = Guid.NewGuid();
@@ -156,7 +156,7 @@ namespace ContactApi.Tests
         [Fact]
         public async Task Delete_Returns_BadRequestResult_When_PersonContactInfoDeleteFails()
         {
-            var controller = new PersonContactInfosController(serviceMock.Object, loggerMock.Object);
+            var controller = new PersonContactInfosController(serviceMock.Object);
 
             var personId = Guid.NewGuid();
             var personContactInfoId = Guid.NewGuid();

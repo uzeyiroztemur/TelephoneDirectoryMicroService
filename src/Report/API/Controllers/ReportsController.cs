@@ -1,27 +1,25 @@
 ﻿using Business.Abstract;
-using Core.CrossCuttingConcerns.Logging;
 using Core.Utilities.Filtering.DataTable;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace API.Controllers
 {
     public class ReportsController : BaseController
     {
         private readonly IReportService _reportService;
-        private readonly Core.CrossCuttingConcerns.Logging.ILogger _logger;
 
-        public ReportsController(IReportService reportService, Core.CrossCuttingConcerns.Logging.ILogger logger)
+        public ReportsController(IReportService reportService)
         {
             _reportService = reportService;
-            _logger = logger;
         }
 
         [HttpGet]
         public async Task<IActionResult> List([FromQuery] DataTableOptions options)
         {
-            _logger.Info("Get reports");
+            Log.Information("Get reports");
             var result = await _reportService.ListAsync(options);
-            _logger.HandleResult(result, "Get reports");
+            Log.Information("Get reports completed");
 
             return ActionResultInstance(result);
         }
@@ -29,9 +27,9 @@ namespace API.Controllers
         [HttpGet("view/{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
-            _logger.Info($"Get report {id}");
+            Log.Information($"Get report {id}");
             var result = await _reportService.GetAsync(id);
-            _logger.HandleResult(result, $"Get report {id}");
+            Log.Information($"Get report {id} completed");
 
             return ActionResultInstance(result);
         }
@@ -39,9 +37,9 @@ namespace API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create()
         {
-            _logger.Info($"Creating report");
+            Log.Information($"Creating report");
             var result = await _reportService.CreateAsync();
-            _logger.HandleResult(result, $"Report created");
+            Log.Information($"Report created completed");
 
             return ActionResultInstance<string>(result);
         }

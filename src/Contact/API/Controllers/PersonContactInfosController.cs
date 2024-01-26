@@ -1,27 +1,25 @@
 ﻿using Business.Abstract;
-using Core.CrossCuttingConcerns.Logging;
 using Entities.DTOs.Params;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace API.Controllers
 {
     public class PersonContactInfosController : BaseController
     {
         private readonly IPersonContactInfoService _personContactInfoService;
-        private readonly Core.CrossCuttingConcerns.Logging.ILogger _logger;
 
-        public PersonContactInfosController(IPersonContactInfoService personContactInfoService, Core.CrossCuttingConcerns.Logging.ILogger logger)
+        public PersonContactInfosController(IPersonContactInfoService personContactInfoService)
         {
             _personContactInfoService = personContactInfoService;
-            _logger = logger;
         }
 
         [HttpPost("{personId}")]
         public async Task<IActionResult> Add(Guid personId, [FromBody] PersonContactInfoForUpsertDTO model)
         {
-            _logger.Info($"Adding personContactInfo {personId}");
+            Log.Information($"Adding personContactInfo {personId}");
             var result = await _personContactInfoService.AddAsync(personId, model);
-            _logger.HandleResult(result, $"PersonContactInfo added {personId}");
+            Log.Information($"PersonContactInfo added {personId} completed");
 
             return ActionResultInstance<string>(result);
         }
@@ -29,9 +27,9 @@ namespace API.Controllers
         [HttpPut("{personId}/{id}")]
         public async Task<IActionResult> Edit(Guid personId, Guid id, [FromBody] PersonContactInfoForUpsertDTO model)
         {
-            _logger.Info($"PersonContactInfo editing {personId} -> {id}");
+            Log.Information($"PersonContactInfo editing {personId} -> {id}");
             var result = await _personContactInfoService.UpdateAsync(personId, id, model);
-            _logger.HandleResult(result, $"PersonContactInfo edited {personId} -> {id}");
+            Log.Information($"PersonContactInfo edited {personId} -> {id} completed");
 
             return ActionResultInstance<string>(result);
         }
@@ -39,9 +37,9 @@ namespace API.Controllers
         [HttpDelete("{personId}/{id}")]
         public async Task<IActionResult> Delete(Guid personId, Guid id)
         {
-            _logger.Info($"PersonContactInfo deleting {personId} -> {id}");
+            Log.Information($"PersonContactInfo deleting {personId} -> {id}");
             var result = await _personContactInfoService.DeleteAsync(personId, id);
-            _logger.HandleResult($"PersonContactInfo deleted {personId} -> {id}");
+            Log.Information($"PersonContactInfo deleted {personId} -> {id} completed");
 
             return ActionResultInstance<string>(result);
         }

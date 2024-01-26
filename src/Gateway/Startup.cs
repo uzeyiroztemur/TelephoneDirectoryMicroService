@@ -1,3 +1,4 @@
+using Elastic.Apm.NetCoreAll;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -101,6 +102,8 @@ namespace API
 
             }).UseOcelot()
               .Wait();
+
+            app.UseAllElasticApm(Configuration);
         }
     }
 }

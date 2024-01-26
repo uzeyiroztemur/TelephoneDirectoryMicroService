@@ -16,7 +16,7 @@ namespace ContactApi.Tests
         [Fact]
         public async Task List_Returns_OkResult_When_PersonList_Successful()
         {
-            var controller = new PersonsController(serviceMock.Object, loggerMock.Object);
+            var controller = new PersonsController(serviceMock.Object);
 
             var options = new DataTableOptions { };
 
@@ -53,7 +53,7 @@ namespace ContactApi.Tests
         [Fact]
         public async Task List_Returns_BadRequestResult_When_PersonList_Fails()
         {
-            var controller = new PersonsController(serviceMock.Object, loggerMock.Object);
+            var controller = new PersonsController(serviceMock.Object);
 
             var options = new DataTableOptions { };
 
@@ -74,7 +74,7 @@ namespace ContactApi.Tests
         [Fact]
         public async Task Get_Returns_OkResult_When_PersonFound()
         {
-            var controller = new PersonsController(serviceMock.Object, loggerMock.Object);
+            var controller = new PersonsController(serviceMock.Object);
 
             var personId = Guid.NewGuid();
 
@@ -112,7 +112,7 @@ namespace ContactApi.Tests
         [Fact]
         public async Task Get_Returns_BadRequestResult_When_PersonNotFound()
         {
-            var controller = new PersonsController(serviceMock.Object, loggerMock.Object);
+            var controller = new PersonsController(serviceMock.Object);
 
             var personId = Guid.NewGuid();
 
@@ -135,7 +135,7 @@ namespace ContactApi.Tests
         [Fact]
         public async Task Add_Returns_OkResult_When_PersonAddedSuccessfully()
         {
-            var controller = new PersonsController(serviceMock.Object, loggerMock.Object);
+            var controller = new PersonsController(serviceMock.Object);
 
             var personForUpsertDTO = new PersonForUpsertDTO
             {
@@ -164,7 +164,7 @@ namespace ContactApi.Tests
         [Fact]
         public async Task Add_Returns_BadRequestResult_When_PersonAddFails()
         {
-            var controller = new PersonsController(serviceMock.Object, loggerMock.Object);
+            var controller = new PersonsController(serviceMock.Object);
 
             var personForUpsertDTO = new PersonForUpsertDTO
             {
@@ -193,7 +193,7 @@ namespace ContactApi.Tests
         [Fact]
         public async Task Edit_Returns_OkResult_When_PersonUpdatedSuccessfully()
         {
-            var controller = new PersonsController(serviceMock.Object, loggerMock.Object);
+            var controller = new PersonsController(serviceMock.Object);
 
             var personId = Guid.NewGuid();
             var personForUpsertDTO = new PersonForUpsertDTO
@@ -223,7 +223,7 @@ namespace ContactApi.Tests
         [Fact]
         public async Task Edit_Returns_BadRequestResult_When_PersonUpdateFails()
         {
-            var controller = new PersonsController(serviceMock.Object, loggerMock.Object);
+            var controller = new PersonsController(serviceMock.Object);
 
             var personId = Guid.NewGuid();
             var personForUpsertDTO = new PersonForUpsertDTO
@@ -253,7 +253,7 @@ namespace ContactApi.Tests
         [Fact]
         public async Task Delete_Returns_OkResult_When_PersonDeletedSuccessfully()
         {
-            var controller = new PersonsController(serviceMock.Object, loggerMock.Object);
+            var controller = new PersonsController(serviceMock.Object);
 
             var personId = Guid.NewGuid();
 
@@ -276,7 +276,7 @@ namespace ContactApi.Tests
         [Fact]
         public async Task Delete_Returns_BadRequestResult_When_PersonDeleteFails()
         {
-            var controller = new PersonsController(serviceMock.Object, loggerMock.Object);
+            var controller = new PersonsController(serviceMock.Object);
 
             var personId = Guid.NewGuid();
 
@@ -299,7 +299,7 @@ namespace ContactApi.Tests
         [Fact]
         public async Task Report_Returns_OkResult_When_PersonReportSuccessful()
         {
-            var controller = new PersonsController(serviceMock.Object, loggerMock.Object);
+            var controller = new PersonsController(serviceMock.Object);
 
             var successfulResult = new SuccessDataResult<IList<PersonReportForViewDTO>>
             {
@@ -334,7 +334,7 @@ namespace ContactApi.Tests
         [Fact]
         public async Task Report_Returns_BadRequestResult_When_PersonReportFails()
         {
-            var controller = new PersonsController(serviceMock.Object, loggerMock.Object);
+            var controller = new PersonsController(serviceMock.Object);
 
             var errorResult = new ErrorDataResult<IList<PersonReportForViewDTO>>();
 

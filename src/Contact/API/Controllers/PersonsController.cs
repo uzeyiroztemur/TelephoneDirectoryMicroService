@@ -1,28 +1,26 @@
 ﻿using Business.Abstract;
-using Core.CrossCuttingConcerns.Logging;
 using Core.Utilities.Filtering.DataTable;
 using Entities.DTOs.Params;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace API.Controllers
 {
     public class PersonsController : BaseController
     {
         private readonly IPersonService _personService;
-        private readonly Core.CrossCuttingConcerns.Logging.ILogger _logger;
 
-        public PersonsController(IPersonService personService, Core.CrossCuttingConcerns.Logging.ILogger logger)
+        public PersonsController(IPersonService personService)
         {
             _personService = personService;
-            _logger = logger;
         }
 
         [HttpGet]
         public async Task<IActionResult> List([FromQuery] DataTableOptions options)
         {
-            _logger.Info("Get persons");
+            Log.Information("Get persons");
             var result = await _personService.ListAsync(options);
-            _logger.HandleResult(result, "Get persons");
+            Log.Information("Get persons completed");
 
             return ActionResultInstance(result);
         }
@@ -30,9 +28,9 @@ namespace API.Controllers
         [HttpGet("view/{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
-            _logger.Info($"Get person {id}");
+            Log.Information($"Get person {id}");
             var result = await _personService.GetAsync(id);
-            _logger.HandleResult(result, $"Get person {id}");
+            Log.Information($"Get person {id} completed");
 
             return ActionResultInstance(result);
         }
@@ -40,9 +38,9 @@ namespace API.Controllers
         [HttpPost]
         public async Task<IActionResult> Add([FromBody] PersonForUpsertDTO model)
         {
-            _logger.Info($"Adding person {model.FirstName} {model.LastName}");
+            Log.Information($"Adding person {model.FirstName} {model.LastName}");
             var result = await _personService.AddAsync(model);
-            _logger.HandleResult(result, $"Person added {model.FirstName} {model.LastName}");
+            Log.Information($"Person added {model.FirstName} {model.LastName} completed");
 
             return ActionResultInstance<string>(result);
         }
@@ -50,9 +48,9 @@ namespace API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Edit(Guid id, [FromBody] PersonForUpsertDTO model)
         {
-            _logger.Info($"Person editing {id}");
+            Log.Information($"Person editing {id}");
             var result = await _personService.UpdateAsync(id, model);
-            _logger.HandleResult(result, $"Person edited {id}");
+            Log.Information($"Person edited {id} completed");
 
             return ActionResultInstance<string>(result);
         }
@@ -60,9 +58,9 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            _logger.Info($"Person deleting {id}");
+            Log.Information($"Person deleting {id}");
             var result = await _personService.DeleteAsync(id);
-            _logger.HandleResult($"Person deleted {id}");
+            Log.Information($"Person deleted {id}");
 
             return ActionResultInstance<string>(result);
         }
@@ -71,9 +69,9 @@ namespace API.Controllers
         [HttpGet("report")]
         public async Task<IActionResult> Report()
         {
-            _logger.Info("Get person report");
+            Log.Information("Get person report");
             var result = await _personService.ReportAsync();
-            _logger.HandleResult(result, "Get person report");
+            Log.Information("Get person report completed");
 
             return ActionResultInstance(result);
         }
