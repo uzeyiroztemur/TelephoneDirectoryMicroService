@@ -1,4 +1,11 @@
-version: '3.9'
+﻿version: '3.9'
+
+networks:
+  shared-network:
+    name: my-shared-network
+    driver: bridge
+
+
 services:  
     postgres:
         image: postgres
@@ -9,6 +16,8 @@ services:
             POSTGRES_USER: postgres
         ports: 
             - 5432:5432
+        networks:
+          - shared-network
             
     rabbitmq:
         image: rabbitmq:3-management
@@ -17,33 +26,126 @@ services:
         ports: 
             - 5672:5672
             - 15672:15672       
-    
+        networks:
+          - shared-network    
+
+    elasticsearch:
+        container_name: elasticsearch
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.16.1
+        environment:
+          - "discovery.type=single-node"
+          - "ELASTIC_PASSWORD=${ELASTIC_PASSWORD}"
+          - "xpack.security.enabled=true"
+        ports:
+          - "9200:9200"
+        networks:
+          - shared-network
+        healthcheck:
+          test: [ "CMD-SHELL", "curl -f -u elastic:${ELASTIC_PASSWORD} http://localhost:9200/ || exit 1" ]
+          interval: 60s
+          timeout: 5s
+          retries: 3
+          start_period: 30s
+
+    kibana:
+        container_name: kibana
+        image: docker.elastic.co/kibana/kibana:7.16.1
+        environment:
+          - "ELASTICSEARCH_URL=http://elasticsearch:9200"
+          - "ELASTICSEARCH_USERNAME=elastic"
+          - "ELASTICSEARCH_PASSWORD=${ELASTIC_PASSWORD}"
+        ports:
+          - "5601:5601"
+        networks:
+          - shared-network
+        depends_on:
+          elasticsearch:
+            condition: service_healthy
+        healthcheck:
+          test: [ "CMD-SHELL", "curl -f http://localhost:5601/ || exit 1" ]
+          interval: 60s
+          timeout: 5s
+          retries: 3
+          start_period: 30s
+
+    apm-server:
+        container_name: apm-server
+        image: docker.elastic.co/apm/apm-server:7.16.0
+        cap_add: ["CHOWN", "DAC_OVERRIDE", "SETGID", "SETUID"] 
+        cap_drop: ["ALL"]
+        ports:
+          - "8200:8200" 
+        networks:
+          - shared-network
+        depends_on:
+          elasticsearch:
+            condition: service_healthy
+        command: > 
+          apm-server -e
+             -E elastic.apm.secret.token=${APM_SECRET_TOKEN} 
+             -E output.elasticsearch.enabled=true
+             -E output.elasticsearch.hosts=["elasticsearch:9200"]
+             -E output.elasticsearch.protocol=http
+             -E output.elasticsearch.username=elastic
+             -E output.elasticsearch.password=${ELASTIC_PASSWORD}
+             -E output.elasticsearch.ssl.enabled=false
+        healthcheck:
+          test: [ "CMD-SHELL", "curl -f http://localhost:8200/ || exit 1" ]
+          interval: 60s
+          timeout: 5s
+          retries: 3
+          start_period: 30s
+
     auth-api:
         image: ${DOCKER_REGISTRY-}auth.api
         environment: 
-            - "ConnectionStrings:PostgreSql=User ID=postgres;Password=rI1l9j!p7gO@;Server=postgres;Port=5432;Database=UserDb;Integrated Security=true;Pooling=true;"        
+            - "ConnectionStrings:PostgreSql=User ID=postgres;Password=rI1l9j!p7gO@;Server=postgres;Port=5432;Database=UserDb;Integrated Security=true;Pooling=true;"      
+            - "Serilog:WriteTo:1:Args:nodeUris=http://elastic:${ELASTIC_PASSWORD}@elasticsearch:9200"
+            - "SeriLogConfig:ElasticUri=http://elasticsearch:9200"
+            - "SeriLogConfig:Environment=production"
+            - "SeriLogConfig:ElasticUser=elastic"
+            - "SeriLogConfig:ElasticPassword=${ELASTIC_PASSWORD}"
+            - "ElasticApm:SecretToken=${APM_SECRET_TOKEN}"
+            - "ElasticApm:ServerUrls=http://apm-server:8200"
         build:
             dockerfile: src/Auth/API/Dockerfile
         restart: always
+        ports: 
+            - 5001:80
+        networks:
+            - shared-network
         depends_on:
             - postgres
             - rabbitmq
-        ports: 
-            - 5001:80
+            - elasticsearch
+            - kibana
+            - apm-server
             
     contact-api:
         image: ${DOCKER_REGISTRY-}contact.api
         environment: 
             - "ConnectionStrings:PostgreSql=User ID=postgres;Password=rI1l9j!p7gO@;Server=postgres;Port=5432;Database=ContactDb;Integrated Security=true;Pooling=true;"
+            - "Serilog:WriteTo:1:Args:nodeUris=http://elastic:${ELASTIC_PASSWORD}@elasticsearch:9200"
+            - "SeriLogConfig:ElasticUri=http://elasticsearch:9200"
+            - "SeriLogConfig:Environment=production"
+            - "SeriLogConfig:ElasticUser=elastic"
+            - "SeriLogConfig:ElasticPassword=${ELASTIC_PASSWORD}"
+            - "ElasticApm:SecretToken=${APM_SECRET_TOKEN}"
+            - "ElasticApm:ServerUrls=http://apm-server:8200" 
         build:
             dockerfile: src/Contact/API/Dockerfile
         restart: always
+        ports: 
+            - 5002:80
+        networks:
+            - shared-network
         depends_on:
             - postgres
             - rabbitmq
+            - elasticsearch
+            - kibana
+            - apm-server 
             - auth-api
-        ports: 
-            - 5002:80            
 
     report-api:
         image: ${DOCKER_REGISTRY-}report.api
@@ -51,16 +153,28 @@ services:
             - "ConnectionStrings:PostgreSql=User ID=postgres;Password=rI1l9j!p7gO@;Server=postgres;Port=5432;Database=ReportDb;Integrated Security=true;Pooling=true;"
             - "RabbitMQOptions:Uri=amqp://rabbitmq"
             - "ContactApiOptions:Uri=http://contact-api/api"
+            - "Serilog:WriteTo:1:Args:nodeUris=http://elastic:${ELASTIC_PASSWORD}@elasticsearch:9200"
+            - "SeriLogConfig:ElasticUri=http://elasticsearch:9200"
+            - "SeriLogConfig:Environment=production"
+            - "SeriLogConfig:ElasticUser=elastic"
+            - "SeriLogConfig:ElasticPassword=${ELASTIC_PASSWORD}"
+            - "ElasticApm:SecretToken=${APM_SECRET_TOKEN}"
+            - "ElasticApm:ServerUrls=http://apm-server:8200"
         build:
             dockerfile: src/Report/API/Dockerfile
         restart: always
+        ports: 
+            - 5003:80
+        networks:
+            - shared-network
         depends_on:
             - postgres
             - rabbitmq
+            - elasticsearch
+            - kibana
+            - apm-server
             - auth-api
             - contact-api
-        ports: 
-            - 5003:80
             
     gateway-api:
         image: ${docker_registry-}gateway.api
@@ -69,14 +183,26 @@ services:
             - "Services:auth:DownstreamPath=http://auth-api"
             - "Services:contact:DownstreamPath=http://contact-api"
             - "Services:report:DownstreamPath=http://report-api"
+            - "Serilog:WriteTo:1:Args:nodeUris=http://elastic:${ELASTIC_PASSWORD}@elasticsearch:9200"
+            - "SeriLogConfig:ElasticUri=http://elasticsearch:9200"
+            - "SeriLogConfig:Environment=production"
+            - "SeriLogConfig:ElasticUser=elastic"
+            - "SeriLogConfig:ElasticPassword=${ELASTIC_PASSWORD}"
+            - "ElasticApm:SecretToken=${APM_SECRET_TOKEN}"
+            - "ElasticApm:ServerUrls=http://apm-server:8200" 
         build:
             dockerfile: src/Gateway/Dockerfile
         restart: always
+        ports: 
+            - 5000:80
+        networks:
+            - shared-network
         depends_on:
             - postgres
             - rabbitmq
+            - elasticsearch
+            - kibana
+            - apm-server
             - auth-api
             - contact-api
             - report-api
-        ports: 
-            - 5000:80
