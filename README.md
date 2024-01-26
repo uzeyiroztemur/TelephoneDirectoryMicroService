@@ -117,6 +117,8 @@ src/Report/API/appsettings.json
 
 src/Gateway/API/appsettings.json
 	-> Logging.Settings
+	-> SeriLogConfig
+	-> ElasticApm
 ```
 
 <br>

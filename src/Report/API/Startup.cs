@@ -1,5 +1,6 @@
 using API.Attributes;
 using API.Converters;
+using API.Middleware;
 using Business.Consumers;
 using Business.DependencyResolvers.Mapping;
 using Business.MessageContracts;
@@ -56,7 +57,6 @@ namespace API
             {
                 options.Filters.Add<AuthorizeAttribute>();
                 options.Filters.Add<ExceptionFilter>();
-                options.Filters.Add<LocalizationFilter>();
             }).AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
@@ -147,6 +147,8 @@ namespace API
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseMiddleware<LocalizationMiddleware>();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
