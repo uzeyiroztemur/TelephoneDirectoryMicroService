@@ -1,6 +1,7 @@
 ﻿using Core.Entities.DTOs;
 using System.ComponentModel;
 using System.Globalization;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -206,6 +207,12 @@ namespace Core.Extensions
 
             ExportFileViewModel result = new() { SendReportFilePath = sendReportFilePath, TemlateFilePath = temlateFilePath };
             return result;
+        }
+
+        public static bool IsAsync(this MethodInfo method)
+        {
+            return (method.ReturnType.IsGenericType && method.ReturnType.GetGenericTypeDefinition() == typeof(Task<>)) ||
+                   method.ReturnType == typeof(Task);
         }
     }
 }

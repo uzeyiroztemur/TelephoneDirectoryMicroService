@@ -3,7 +3,6 @@ using Business.Abstract;
 using Business.Constants;
 using Business.MessageContracts;
 using Business.MessageContracts.Commands;
-using Core.Aspects.Autofac.Caching;
 using Core.Aspects.Autofac.Transaction;
 using Core.Entities.DTOs;
 using Core.Utilities.Business;
@@ -45,7 +44,7 @@ namespace Business.Concrete
             return await _reportDal.ListAsync(new Filter(options));
         }
 
-        [CacheAspect()]
+        //[CacheAspect(minute: 1)]
         public async Task<IDataResult<ReportForPreviewDTO>> GetAsync(Guid id)
         {
             var dataItem = await _reportDal.GetAsync(id);
@@ -78,7 +77,7 @@ namespace Business.Concrete
             return new SuccessDataResult<Guid?>(entityToAdd.Id);
         }
 
-        [TransactionScopeAspect()]
+        [TransactionScopeAspectAsync()]
         public async Task<IResult> CreateDetailAsync(Guid reportId, IList<ReportDetailForUpsertDTO> data)
         {
             var reportEntity = await _reportDal.GetAsync(f => f.Id == reportId);

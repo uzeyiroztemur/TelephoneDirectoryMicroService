@@ -8,12 +8,11 @@ namespace Core.Extensions
         {
             if (type == typeof(bool))
                 return (object)(p.ToString() == "True");
-            if (type == typeof(Decimal?) && p.GetType() == typeof(string))
+            if (type == typeof(decimal?) && p.GetType() == typeof(string))
             {
-                Decimal result;
-                return (object)(Decimal.TryParse(p.ToString(), out result) ? new Decimal?(result) : new Decimal?());
+                return (object)(decimal.TryParse(p.ToString(), out decimal result) ? new Decimal?(result) : new Decimal?());
             }
-            if (type == typeof(Decimal) && p.GetType() == typeof(string))
+            if (type == typeof(decimal) && p.GetType() == typeof(string))
                 return (object)Decimal.Parse(p.ToString());
             if (type == typeof(short) && p.GetType() == typeof(string))
                 return (object)short.Parse(p.ToString());
