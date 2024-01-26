@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Core.Entities.DTOs;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using System.Net;
 
@@ -33,17 +34,15 @@ namespace Core.Extensions.Exception
 
             string message = "Internal Server Error";
             if (e.GetType() == typeof(ValidationException))
-            {
                 message = e.Message;
-            }
 
-            var errorDetails = new ErrorDetails
+            var errorDetails = new ErrorResult
             {
-                StatusCode = httpContext.Response.StatusCode,
                 Message = message,
             };
 
             return httpContext.Response.WriteAsync(errorDetails.ToString());
+
         }
     }
 }
