@@ -33,18 +33,18 @@ namespace Business.Concrete
         #endregion
 
         [ValidationAspect(typeof(PersonContactInfoForUpsertValidator), Priority = 1)]
-        public async Task<IResult> AddAsync(Guid personId, PersonContactInfoForUpsertDTO model)
+        public async Task<IDataResult<Guid?>> AddAsync(Guid personId, PersonContactInfoForUpsertDTO model)
         {
             var result = BusinessRules.Run(await ValidatePersonContactInfo(personId, null, model));
             if (result != null)
-                return new ErrorResult(result.Message);
+                return new ErrorDataResult<Guid?>(result.Message);
 
             var entityToAdd = _mapper.Map<PersonContactInfo>(model);
             entityToAdd.PersonId = personId;
 
             await _personContactInfoDal.AddAsync(entityToAdd);
 
-            return new SuccessResult();
+            return new SuccessDataResult<Guid?>(entityToAdd.Id);
         }
 
         [ValidationAspect(typeof(PersonContactInfoForUpsertValidator), Priority = 1)]

@@ -9,7 +9,7 @@ namespace Business.Abstract
     {
         Task<IDataResult<IList<ReportForViewDTO>>> ListAsync(DataTableOptions options);
         Task<IDataResult<ReportForPreviewDTO>> GetAsync(Guid id);
-        Task<IResult> CreateAsync();
+        Task<IDataResult<Guid?>> CreateAsync();
         Task<IResult> CreateDetailAsync(Guid reportId, IList<ReportDetailForUpsertDTO> data);
     }
 }

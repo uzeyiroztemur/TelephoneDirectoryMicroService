@@ -24,7 +24,7 @@ namespace ContactApi.Tests
                 IsActive = true,
             };
 
-            var successfulResult = new SuccessDataResult<string>("PersonContactInfo added successfully");
+            var successfulResult = new SuccessDataResult<Guid?>("PersonContactInfo added successfully");
 
             // Setup mock service to return the expected result when called with the expected parameters
             serviceMock.Setup(x => x.AddAsync(personId, personContactInfoForUpsertDTO)).ReturnsAsync(successfulResult);
@@ -53,7 +53,7 @@ namespace ContactApi.Tests
                 IsActive = false,
             };
 
-            var errorResult = new ErrorDataResult<string>("PersonContactInfo add failed");
+            var errorResult = new ErrorDataResult<Guid?>("PersonContactInfo add failed");
 
             // Setup mock service to return the error result when called with the expected parameters
             serviceMock.Setup(x => x.AddAsync(personId, personContactInfoForUpsertDTO)).ReturnsAsync(errorResult);

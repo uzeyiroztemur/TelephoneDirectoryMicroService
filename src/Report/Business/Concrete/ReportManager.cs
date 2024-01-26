@@ -55,11 +55,11 @@ namespace Business.Concrete
             return new ErrorDataResult<ReportForPreviewDTO>();
         }
 
-        public async Task<IResult> CreateAsync()
+        public async Task<IDataResult<Guid?>> CreateAsync()
         {
             var result = BusinessRules.Run(ValidateReport(null));
             if (result != null)
-                return new ErrorResult(result.Message);
+                return new ErrorDataResult<Guid?>(result.Message);
 
             var entityToAdd = new Report
             {
@@ -75,7 +75,7 @@ namespace Business.Concrete
                 ReportId = entityToAdd.Id,
             });
 
-            return new SuccessResult();
+            return new SuccessDataResult<Guid?>(entityToAdd.Id);
         }
 
         [TransactionScopeAspect()]

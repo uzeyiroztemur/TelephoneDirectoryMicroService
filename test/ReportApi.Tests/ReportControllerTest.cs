@@ -141,7 +141,7 @@ namespace ReportApi.Tests
         {
             var controller = new ReportsController(serviceMock.Object);
 
-            var successfulResult = new SuccessDataResult<string>("Report created successfully");
+            var successfulResult = new SuccessDataResult<Guid?>("Report created successfully");
 
             // Setup mock service to return the expected result
             serviceMock.Setup(x => x.CreateAsync()).ReturnsAsync(successfulResult);
@@ -162,7 +162,7 @@ namespace ReportApi.Tests
         {
             var controller = new ReportsController(serviceMock.Object);
 
-            var errorResult = new ErrorDataResult<string>("Report creation failed");
+            var errorResult = new ErrorDataResult<Guid?>("Report creation failed");
 
             // Setup mock service to return the error result
             serviceMock.Setup(x => x.CreateAsync()).ReturnsAsync(errorResult);

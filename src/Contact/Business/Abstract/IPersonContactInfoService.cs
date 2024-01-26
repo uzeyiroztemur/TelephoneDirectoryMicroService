@@ -5,7 +5,7 @@ namespace Business.Abstract
 {
     public interface IPersonContactInfoService
     {
-        Task<IResult> AddAsync(Guid personId, PersonContactInfoForUpsertDTO model);
+        Task<IDataResult<Guid?>> AddAsync(Guid personId, PersonContactInfoForUpsertDTO model);
         Task<IResult> UpdateAsync(Guid personId, Guid id, PersonContactInfoForUpsertDTO model);
         Task<IResult> DeleteAsync(Guid personId, Guid id);
     }
